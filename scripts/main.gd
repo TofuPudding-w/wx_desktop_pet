@@ -23,6 +23,7 @@ func initialize() -> void:
 	Engine.max_fps = 30
 	var args := OS.get_cmdline_user_args()
 	debug_mode = "--debug-window" in args
+	paused = "--paused" in args
 	soak = "--soak" in args
 	for arg in args:
 		if arg.begins_with("--quit-after="):
@@ -54,9 +55,12 @@ func initialize() -> void:
 		pet.configure(configs[index], desktop, initial_position(index))
 		pet.facing = 1 if index == 0 else -1
 		pet.menu_requested.connect(toggle_menu)
+		pet.drag_started.connect(func(_pet): close_menu())
+		pet.paused = paused
 		pets.append(pet)
 		window.show()
 	interaction.setup(pets, pool, dialogue_data if dialogue_data is Dictionary else {})
+	interaction.paused = paused
 	print("CP Pet ready: backend=%s, pets=%d, work_area=%s" % [DisplayServer.get_name(), pets.size(), area])
 
 func initial_position(index: int) -> Vector2:

@@ -64,8 +64,10 @@ func stop_drag() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
+		if "--trace-input" in OS.get_cmdline_user_args():
+			print("INPUT ", character_id, " ", event, " state=", State.keys()[state])
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed and not menu_open and DesktopWindowController.BODY.has_point(event.position):
+			if event.pressed and DesktopWindowController.BODY.has_point(event.position):
 				start_drag(Vector2(DisplayServer.mouse_get_position()))
 			elif not event.pressed:
 				stop_drag()
