@@ -1,0 +1,7 @@
+{
+  "look_and_talk": {
+    "weight": 10, "trigger_distance": 180, "spacing": 110,
+    "cooldown": 30, "duration": 4, "approach_timeout": 5,
+    "dialogue": "first_meeting"
+  }
+}

@@ -25,7 +25,14 @@ func update_input(expanded: bool) -> void:
 	if debug_mode:
 		window.mouse_passthrough_polygon = PackedVector2Array()
 		return
-	var r := Rect2(8, 8, 224, 224) if expanded else BODY
+	if expanded:
+		# Concave union: bubble/menu, narrow stem, body. Side gaps still pass through.
+		window.mouse_passthrough_polygon = PackedVector2Array([
+			Vector2(10,8),Vector2(230,8),Vector2(230,102),Vector2(130,102),
+			Vector2(130,104),Vector2(168,104),Vector2(168,232),Vector2(72,232),
+			Vector2(72,104),Vector2(110,104),Vector2(110,102),Vector2(10,102)])
+		return
+	var r := BODY
 	window.mouse_passthrough_polygon = PackedVector2Array([
 		r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
 
