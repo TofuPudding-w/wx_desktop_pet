@@ -1,4 +1,4 @@
-CP 双角色桌宠 v0.1.0 · Linux x86_64
+CP 双角色桌宠 v@VERSION@ · Linux x86_64
 
 启动：解压后在文件夹中运行 ./run.sh
 若解压工具丢失权限：chmod +x run.sh CPPet.x86_64

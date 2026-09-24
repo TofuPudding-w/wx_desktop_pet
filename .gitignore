@@ -3,3 +3,17 @@ dist/
 .tools/
 *.log
 __pycache__/
+
+# Release assets belong in GitHub Releases, not Git history.
+*.zip
+*.tar.gz
+*.tgz
+*.dmg
+*.AppImage
+*.exe
+*.msi
+*.deb
+*.rpm
+*.pck
+*.x86_64
+*.tpz

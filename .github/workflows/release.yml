@@ -1,0 +1,88 @@
+name: Release draft
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing version tag, e.g. v0.1.0 (draft only)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      archive: ${{ steps.meta.outputs.archive }}
+      commit: ${{ steps.source.outputs.commit }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate tag, version and notes
+        id: meta
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: python3 tools/release_metadata.py --tag "$RELEASE_TAG" --github-output "$GITHUB_OUTPUT"
+      - name: Verify tag points to checked-out source
+        id: source
+        env:
+          RELEASE_TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          commit="$(git rev-parse HEAD)"
+          test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$commit"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+      - name: Test release tooling
+        run: python3 -m unittest discover -s tests -p 'test_release*.py' -v
+      - name: Install verified Godot 4.6.1 toolchain
+        run: ./tools/setup_godot.sh
+      - name: Import, test and export Linux
+        env:
+          GODOT_BIN: ${{ github.workspace }}/.tools/godot/Godot_v4.6.1-stable_linux.x86_64
+        run: |
+          "$GODOT_BIN" --headless --editor --path . --import --quit
+          "$GODOT_BIN" --headless --path . --script tests/test_runner.gd
+          "$GODOT_BIN" --headless --path . --script tests/test_app.gd
+          ./tools/export_linux.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-linux
+          path: |
+            dist/${{ steps.meta.outputs.archive }}
+            dist/${{ steps.meta.outputs.archive }}.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  draft:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.build.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-linux
+          path: dist
+      - name: Create draft prerelease and upload verified assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+          RELEASE_COMMIT: ${{ needs.build.outputs.commit }}
+        run: python3 tools/publish_release.py --tag "$RELEASE_TAG" --commit "$RELEASE_COMMIT"

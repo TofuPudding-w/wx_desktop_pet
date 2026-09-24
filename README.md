@@ -4,7 +4,7 @@ Godot 4.6.1 / GDScript 的双人桌宠原型。蓝蓝与橙橙在桌面行走，
 
 ## 直接运行
 
-现成包：`dist/CPPet-v0.1.0-Linux-x64.zip`。解压后执行：
+本地构建包：`dist/CPPet-v0.1.0-Linux-x64.zip`。线上版本统一放在[本仓库 Releases](https://github.com/TofuPudding-w/wx_desktop_pet/releases)（草稿尚不能公开下载）。解压后执行：
 
 ```bash
 ./run.sh
@@ -32,7 +32,7 @@ Godot 4.6.1 / GDScript 的双人桌宠原型。蓝蓝与橙橙在桌面行走，
 GODOT_BIN=/path/to/Godot_v4.6.1-stable_linux.x86_64 ./run.sh
 ```
 
-本次使用的引擎位于 `/tmp/cp-pet-godot/Godot_v4.6.1-stable_linux.x86_64`；临时目录不保证重启后保留。导出包不依赖这个路径。
+运行 `./tools/setup_godot.sh` 可安装固定版本引擎和模板到被忽略的 `.tools/`。已有模板时可用 `--engine-only` 只安装引擎。导出包不依赖该开发工具目录。
 
 ### 代码结构
 
@@ -82,6 +82,12 @@ GODOT_BIN=/path/to/godot ./tools/export_linux.sh
 ```
 
 输出 `dist/CPPet-v0.1.0-Linux-x64/`、ZIP 和 SHA-256 文件。资源嵌入可执行文件，测试文件不进入包；附带启动脚本、中文说明和第三方许可证。构建依赖 Python 3，不需要额外 Python 库。
+
+## GitHub Releases
+
+推送 `vX.Y.Z` 标签后，工作流自动测试、构建 Linux ZIP 并上传到同仓库的 Release 草稿；不会自动公开。版本必须与 `project.godot` 一致，发布说明位于 `releases/vX.Y.Z.md`。程序包不提交到 Git。
+
+完整操作、重试与下载链接说明见 [发布指南](docs/RELEASING.md)。目前只提供 Linux，Windows/macOS 适配和静态网站留待后续。
 
 ## 已知限制
 

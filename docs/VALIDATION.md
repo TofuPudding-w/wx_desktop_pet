@@ -16,7 +16,7 @@
 
 ## 尚不能宣称通过
 
-- 连续两小时真实桌面挂机。可用 `python3 tools/soak_desktop.py` 自动执行并记录 `dist/soak-result.json`；只有 `status: passed` 才表示通过。该测试有独立日志、每 30 秒的角色状态和操作系统 RSS 采样，运行结束后自动关闭桌宠。
+- 连续两小时真实桌面挂机未通过：上次报告 status=failed，墙钟约 2161 秒、累计完成 62 次互动，程序返回码 0，但不足 7200 秒；不能认定为崩溃或通过。可用 `python3 tools/soak_desktop.py` 自动执行并记录 `dist/soak-result.json`；只有 `status: passed` 才表示通过。该测试有独立日志、每 30 秒的角色状态和操作系统 RSS 采样，运行结束后自动关闭桌宠。
 - 混合 DPI、多显示器热插拔、真实休眠恢复、其他显卡／桌面环境、Windows。
 - 目视长时间打字不受影响：已验证焦点保持及 no-focus 属性，但没有往用户的编辑器自动输入测试文字。
 
