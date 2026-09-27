@@ -1,0 +1,73 @@
+{
+  "fps": 1,
+  "loop_seconds": 2,
+  "alignment": "same full-image height and scale for both characters; original proportions and transparent margins preserved; canvas bottom at origin",
+  "characters": {
+    "wei_wuxian": {
+      "source_size": [
+        517,
+        713
+      ],
+      "frame_alpha_bounds": [
+        [
+          58,
+          60,
+          465,
+          701
+        ],
+        [
+          54,
+          63,
+          474,
+          701
+        ]
+      ],
+      "source_top": 60,
+      "source_bottom": 701,
+      "source_height": 641,
+      "scale": 0.17952314165497896,
+      "sha256": [
+        "8a64a16f8d5f012204228eb865a2f89ba150bb6c9bf4bbcd0f20fa315eeda00c",
+        "f25d16580d23757d4dfc92b77affa27c396a4a39c898960839e5eadd441d5d37"
+      ],
+      "anchor_source": [
+        258.5,
+        713
+      ]
+    },
+    "lan_wangji": {
+      "source_size": [
+        487,
+        713
+      ],
+      "frame_alpha_bounds": [
+        [
+          41,
+          3,
+          481,
+          704
+        ],
+        [
+          26,
+          5,
+          426,
+          704
+        ]
+      ],
+      "source_top": 3,
+      "source_bottom": 704,
+      "source_height": 701,
+      "scale": 0.17952314165497896,
+      "sha256": [
+        "aea3c46050509619f44961f957cddfc44ee371d75aca25b3f08a4177a5326e86",
+        "57a73703a929c6a1b7b204f28fb7c97fceedfd1e03ac1bfa6a690f46ad59f229"
+      ],
+      "anchor_source": [
+        243.5,
+        713
+      ]
+    }
+  },
+  "display_canvas_height_px": 128,
+  "shared_scale": 0.17952314165497896
+}

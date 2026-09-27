@@ -14,6 +14,7 @@ var foot := Vector2.ZERO
 var facing := 1.0
 var paused := false
 var menu_open := false
+var input_button_events := 0
 var bubble := ""
 var heart := false
 var controller: DesktopWindowController
@@ -64,6 +65,7 @@ func stop_drag() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
+		input_button_events += 1
 		if "--trace-input" in OS.get_cmdline_user_args():
 			print("INPUT ", character_id, " ", event, " state=", State.keys()[state])
 		if event.button_index == MOUSE_BUTTON_LEFT:

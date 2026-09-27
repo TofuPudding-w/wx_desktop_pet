@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/characters/lan_wangji/walking/walking.tres" id="1"]
+
+[node name="Walking" type="Node2D"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+scale = Vector2(0.187408491947, 0.187408491947)
+sprite_frames = ExtResource("1")
+animation = &"walk"
+autoplay = "walk"
+centered = true
+offset = Vector2(0, -362.5)
+flip_h = false

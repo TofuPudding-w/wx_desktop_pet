@@ -165,10 +165,13 @@ func write_report() -> void:
 	var states := []
 	for pet in pets:
 		states.append({"id":pet.character_id, "state":Pet.State.keys()[pet.state],
-			"x":pet.foot.x, "y":pet.foot.y, "state_seconds":pet.state_time})
+			"x":pet.foot.x, "y":pet.foot.y, "state_seconds":pet.state_time,
+			"paused":pet.paused, "menu_open":pet.menu_open, "available":pet.available(),
+			"input_button_events":pet.input_button_events})
 	var report := {"elapsed_seconds":run_elapsed, "completed":interaction.completed,
 		"cancelled":interaction.cancelled, "phase":InteractionManager.Phase.keys()[interaction.phase],
-		"pets":states, "memory_bytes":OS.get_static_memory_usage()}
+		"pets":states, "paused":paused, "menu_open":is_instance_valid(menu),
+		"memory_bytes":OS.get_static_memory_usage()}
 	var file := FileAccess.open(telemetry_path, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(report, "  "))

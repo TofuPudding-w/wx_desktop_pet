@@ -73,6 +73,8 @@ GODOT_BIN=/path/to/Godot_v4.6.1-stable_linux.x86_64 ./run.sh
 python3 tools/soak_desktop.py
 ```
 
+`tools/soak_desktop.py` 为每次运行创建 `dist/soak-runs/<run-id>/`，保存日志、状态采样和结果；最新结果同时写入 `dist/soak-result.json`。只有 `status: passed` 且 `two_hour_acceptance: true` 才代表完整两小时通过。`--seconds=60` 可用于短测，但不会被认定为两小时验收。测试会检查心跳、互动进展、真实时长、日志和可执行文件哈希；菜单打开或暂停导致进展停止时会记录失败。
+
 `--soak` 会把空闲角色送回相遇位置，反复验证完整互动，不模拟鼠标。每 30 秒覆盖写入报告，包含已运行秒数、完成／取消次数、状态和 Godot 管理的内存；两小时后自动退出。普通启动没有这个行为。鼠标命中探针 `tools/x11_probe.py` 需要 X11 的 libX11、libXext、libXtst、xwininfo、ImageMagick；它会移动鼠标并点击桌宠，运行时请不要同时操作鼠标。
 
 下载官方 **4.6.1 stable** 的 `Godot_v4.6.1-stable_export_templates.tpz`，将 `templates/linux_release.x86_64` 和 `templates/linux_debug.x86_64` 提取到 `.tools/templates/`。本次已准备好这两个模板。引擎与模板必须同版本。
@@ -89,6 +91,17 @@ GODOT_BIN=/path/to/godot ./tools/export_linux.sh
 
 完整操作、重试与下载链接说明见 [发布指南](docs/RELEASING.md)。目前只提供 Linux，Windows/macOS 适配和静态网站留待后续。
 
+## Stage 3：忘羡角色与关系设定
+
+人物依据已确认为小说，表现关系确立后的稳定日常。首轮每人一套服装、idle／walk／dragged，双人只做“自然靠近→共同待机”。用户用 Procreate 自行绘制，按空闲时间推进。
+
+- [设定整理与确认记录](docs/design/STAGE3_REVIEW.md)
+- [文字外观要求](docs/design/VISUAL_REQUIREMENTS.md)：参考图后补，服装与造型尚未定稿。
+- [视觉参考登记表](docs/design/REFERENCE_REGISTER.md)
+- [角色动画素材入口](assets/characters/README.md)：两人各两帧手绘 idle，1 FPS；打开 `scenes/IdlePreview.tscn` 按 F6 查看画布等高、保留人物身高差的预览。
+
+当前运行的仍是技术占位原型，以上设定尚未替换进角色与互动内容。
+
 ## 已知限制
 
 - 原生 Wayland 不支持本原型所需的定位与局部点击穿透；使用 XWayland。依据：[Godot DisplayServer](https://docs.godotengine.org/en/4.6/classes/class_displayserver.html#class-displayserver-method-window-set-position)。
@@ -98,3 +111,5 @@ GODOT_BIN=/path/to/godot ./tools/export_linux.sh
 - 测试记录见 `docs/VALIDATION.md`。模拟时间不能替代真实两小时挂机。
 
 字体、Godot 及其依赖的许可见 `docs/THIRD_PARTY.md`；项目原始代码的开源许可证尚待作者选择。
+
+走路素材预览：打开 `scenes/WalkingPreview.tscn` 按 F6。忘羡双人 6 FPS 走路，图片等宽约 236.5px，保留原图身高差。魏无羡左右各 8 帧独立动画，不镜像；蓝忘机 4 帧左右共用。

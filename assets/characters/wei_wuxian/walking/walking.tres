@@ -1,0 +1,22 @@
+[gd_resource type="SpriteFrames" load_steps=17 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/1.png" id="left_to_right_1"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/2.png" id="left_to_right_2"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/3.png" id="left_to_right_3"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/4.png" id="left_to_right_4"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/5.png" id="left_to_right_5"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/6.png" id="left_to_right_6"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/7.png" id="left_to_right_7"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/left_to_right/8.png" id="left_to_right_8"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/1.png" id="right_to_left_1"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/2.png" id="right_to_left_2"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/3.png" id="right_to_left_3"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/4.png" id="right_to_left_4"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/5.png" id="right_to_left_5"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/6.png" id="right_to_left_6"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/7.png" id="right_to_left_7"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/walking/right_to_left/8.png" id="right_to_left_8"]
+
+[resource]
+animations = [{"frames": [{"duration": 1.0, "texture": ExtResource("left_to_right_1")}, {"duration": 1.0, "texture": ExtResource("left_to_right_2")}, {"duration": 1.0, "texture": ExtResource("left_to_right_3")}, {"duration": 1.0, "texture": ExtResource("left_to_right_4")}, {"duration": 1.0, "texture": ExtResource("left_to_right_5")}, {"duration": 1.0, "texture": ExtResource("left_to_right_6")}, {"duration": 1.0, "texture": ExtResource("left_to_right_7")}, {"duration": 1.0, "texture": ExtResource("left_to_right_8")}], "loop": true, "name": &"left_to_right", "speed": 6.0},
+{"frames": [{"duration": 1.0, "texture": ExtResource("right_to_left_1")}, {"duration": 1.0, "texture": ExtResource("right_to_left_2")}, {"duration": 1.0, "texture": ExtResource("right_to_left_3")}, {"duration": 1.0, "texture": ExtResource("right_to_left_4")}, {"duration": 1.0, "texture": ExtResource("right_to_left_5")}, {"duration": 1.0, "texture": ExtResource("right_to_left_6")}, {"duration": 1.0, "texture": ExtResource("right_to_left_7")}, {"duration": 1.0, "texture": ExtResource("right_to_left_8")}], "loop": true, "name": &"right_to_left", "speed": 6.0}]

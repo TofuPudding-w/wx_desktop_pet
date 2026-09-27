@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/characters/wei_wuxian/walking/walking.tres" id="1"]
+
+[node name="Walking" type="Node2D"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+scale = Vector2(0.187408491947, 0.187408491947)
+sprite_frames = ExtResource("1")
+animation = &"left_to_right"
+autoplay = "left_to_right"
+centered = false
+offset = Vector2(-315.5, -683)
+flip_h = false

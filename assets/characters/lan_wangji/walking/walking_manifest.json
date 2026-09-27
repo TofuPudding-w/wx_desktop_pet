@@ -1,0 +1,30 @@
+{
+  "fps": 6,
+  "source_size": [
+    631,
+    725
+  ],
+  "mirror_allowed": true,
+  "source_facing": "right",
+  "shared_scale": 0.18740849194729137,
+  "preview_scale": 2,
+  "display_canvas_width_px": 236.5095168374817,
+  "frames": [
+    {
+      "file": "1.png",
+      "sha256": "b1dbf93e2f9af7647c61a838b6f036c3ad5e93829c95434c1696dc8e01b0ab8a"
+    },
+    {
+      "file": "2.png",
+      "sha256": "8d37ba75de9026ce34fdc424cfeaaf82ffe12bb62b3ecec80cc58e607a8203c8"
+    },
+    {
+      "file": "3.png",
+      "sha256": "6303d94ebefb8bb443cbdfaf92637fb2e8a23b4a10642b54ca04c560e26803d0"
+    },
+    {
+      "file": "4.png",
+      "sha256": "95b87609ace85315b6f0e09f40bfaad34275c8087c542c63b9aa62940fa8d8f4"
+    }
+  ]
+}

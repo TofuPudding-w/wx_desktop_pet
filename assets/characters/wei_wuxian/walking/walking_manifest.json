@@ -1,0 +1,79 @@
+{
+  "fps": 6,
+  "display_canvas_height_px": 256,
+  "source_size": [
+    631,
+    683
+  ],
+  "mirror_allowed": false,
+  "directions": {
+    "left_to_right": [
+      {
+        "file": "left_to_right/1.png",
+        "sha256": "3818f91da91b142c052400f98cce46a2f7b72d7fa4b5efa964b044ee145625fb"
+      },
+      {
+        "file": "left_to_right/2.png",
+        "sha256": "2232687fdb881676fd2ff73355032241a7ce2267d4ff2ea442844349ddab308b"
+      },
+      {
+        "file": "left_to_right/3.png",
+        "sha256": "bf10fc6589178c2048c8a063e9a767dcd5102c58194e2808b55615c07e0f4cd2"
+      },
+      {
+        "file": "left_to_right/4.png",
+        "sha256": "585aaea55d727bace0f0516b6142d469f0782f8df02a1d427b86e6fac0af4c81"
+      },
+      {
+        "file": "left_to_right/5.png",
+        "sha256": "28aa4e562c4a924811ec6c98dbefd3528a8b0cc4c6ea7959ef0b24500ed8d9a4"
+      },
+      {
+        "file": "left_to_right/6.png",
+        "sha256": "79c6190424214a985851d339492330c5117240241cc98eb0701513e858a9c585"
+      },
+      {
+        "file": "left_to_right/7.png",
+        "sha256": "6be82f5d29414859f77300f300040c7bd0c516287d84716e4a2a12931331e40b"
+      },
+      {
+        "file": "left_to_right/8.png",
+        "sha256": "f3ff867d4a211da31a769a92d5f9fdea1c2f0e16352900aa0b971a1e826df24a"
+      }
+    ],
+    "right_to_left": [
+      {
+        "file": "right_to_left/1.png",
+        "sha256": "0516c69a1b2cd75775b300dc7284a1d00d87e0875e49611e10c14a9268b169cb"
+      },
+      {
+        "file": "right_to_left/2.png",
+        "sha256": "ad5bc23c7dd173313d3c1c7fd3dd45cc60acaa224ae2120f4a5e76603738e22f"
+      },
+      {
+        "file": "right_to_left/3.png",
+        "sha256": "07c848835a7cfba8109e5041e9fd1d634243bd35178be997362c18f312f807d2"
+      },
+      {
+        "file": "right_to_left/4.png",
+        "sha256": "4661c34c636b2034c2d7741b94cbddc04624afd17b1275f5a2ac28e507eb5357"
+      },
+      {
+        "file": "right_to_left/5.png",
+        "sha256": "6992769eebdf9c858acbd420669e369921c2605b45e0a658c4f1cbe9f6c657d6"
+      },
+      {
+        "file": "right_to_left/6.png",
+        "sha256": "8f2f798db3461757a9829fe7742af57fa0b4d1a6cff6a5bbf1b4f45458986d83"
+      },
+      {
+        "file": "right_to_left/7.png",
+        "sha256": "b65377388a4c9e2f805f24ae6319ed061d9ba3b4525ef3b114dc9140d4be17a3"
+      },
+      {
+        "file": "right_to_left/8.png",
+        "sha256": "6f77f6b3db5928b542974ed68847fc4324a9c70f3be28da2b51f88f5f81c42a5"
+      }
+    ]
+  }
+}
