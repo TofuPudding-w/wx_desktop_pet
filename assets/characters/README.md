@@ -36,3 +36,7 @@ assets/characters/
 ## 蓝忘机走路与双人等宽预览
 
 已接入 `lan_wangji/walking/1.png`～`4.png`，暂沿用 6 FPS，用户允许左右共用并镜像。两人走路原图宽度同为 631px，使用完全相同缩放；预览图片等宽约 236.5px，保留不同图片高度。打开 `scenes/WalkingPreview.tscn` 按 F6 可看双人实际走动。详见 [蓝忘机走路说明](lan_wangji/walking/README.md)。待机规格不变。
+
+## 拖起姿势
+
+已接收两人的 `drag_up/` 原图和方向规则；打开 `scenes/DragPreview.tscn` 按 F6 可用鼠标试拖。魏无羡左右独立图，蓝忘机单图镜像。见 [拖起素材与预览说明](DRAG_PREVIEW.md)。

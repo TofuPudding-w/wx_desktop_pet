@@ -1,0 +1,14 @@
+{
+  "source_size": [
+    512,
+    683
+  ],
+  "mirror_allowed": true,
+  "display_scale_in_preview": 0.37481698389458273,
+  "frames": [
+    {
+      "file": "drag_up.png",
+      "sha256": "9d99563cb62866b81a5f7d05973e88dddd5607c306878a8fd4fc1fad5d0af6ff"
+    }
+  ]
+}

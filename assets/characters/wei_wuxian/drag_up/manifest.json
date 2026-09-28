@@ -1,0 +1,18 @@
+{
+  "source_size": [
+    512,
+    683
+  ],
+  "mirror_allowed": false,
+  "display_scale_in_preview": 0.37481698389458273,
+  "frames": [
+    {
+      "file": "to_the_right.png",
+      "sha256": "fc21fd14ff78b409a79f7eacf3be316295747bb43f097c7fd10a3f7d9f8afc3a"
+    },
+    {
+      "file": "to_the_left.png",
+      "sha256": "8e448169849493c2071e30503e495d28088541e45c3b5e0bec5b3f60d9bed427"
+    }
+  ]
+}

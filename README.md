@@ -113,3 +113,5 @@ GODOT_BIN=/path/to/godot ./tools/export_linux.sh
 字体、Godot 及其依赖的许可见 `docs/THIRD_PARTY.md`；项目原始代码的开源许可证尚待作者选择。
 
 走路素材预览：打开 `scenes/WalkingPreview.tscn` 按 F6。忘羡双人 6 FPS 走路，图片等宽约 236.5px，保留原图身高差。魏无羡左右各 8 帧独立动画，不镜像；蓝忘机 4 帧左右共用。
+
+拖拽素材预览：打开 `scenes/DragPreview.tscn` 按 F6，左键拖起、松手落下；左右键检查独立／镜像姿势。见 [拖起预览说明](assets/characters/DRAG_PREVIEW.md)。

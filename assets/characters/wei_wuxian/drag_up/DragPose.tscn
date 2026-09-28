@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/drag_pose.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/drag_up/to_the_right.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/characters/wei_wuxian/drag_up/to_the_left.png" id="3"]
+
+[node name="DragPose" type="Sprite2D"]
+texture_filter = 2
+scale = Vector2(0.187408491947, 0.187408491947)
+texture = ExtResource("2")
+offset = Vector2(0, -341.5)
+script = ExtResource("1")
+right_texture = ExtResource("2")
+left_texture = ExtResource("3")
