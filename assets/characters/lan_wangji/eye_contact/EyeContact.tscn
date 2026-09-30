@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/characters/lan_wangji/eye_contact/eye_contact.tres" id="1"]
+
+[node name="EyeContact" type="Node2D"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+scale = Vector2(0.179523141655, 0.179523141655)
+sprite_frames = ExtResource("1")
+animation = &"eye_contact"
+centered = false
+offset = Vector2(-262.5, -713)
+flip_h = false

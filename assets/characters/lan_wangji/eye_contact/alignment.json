@@ -1,0 +1,44 @@
+{
+  "source_size": [
+    512,
+    713
+  ],
+  "idle_reference": "../idle/01.png",
+  "first_frame_shift_from_idle_px": [
+    19,
+    0
+  ],
+  "sprite_offset": [
+    -262.5,
+    -713
+  ],
+  "scale": 0.17952314165497896,
+  "preview_parent_scale": 2,
+  "alignment_rule": "one constant translation for all frames; same scale as idle; never normalize character bounds",
+  "allowed_order": "wei_wuxian_left_lan_wangji_right",
+  "mirror_allowed": false,
+  "preview_fps": 4,
+  "fps_confirmed": true,
+  "frames": [
+    {
+      "file": "1.png",
+      "sha256": "efc7249bc369ab7b8d1dfdd9debf928c710e91fce5457355337e0a7680d42eac"
+    },
+    {
+      "file": "2.png",
+      "sha256": "303b70399a92ca3241fe12e0db2f6483101818f1513d407453d82eff2427fda3"
+    },
+    {
+      "file": "3.png",
+      "sha256": "e35464b90bc0b95ac06c552827283f062bc82a5dca030cd71b05534ca646ebba"
+    },
+    {
+      "file": "4.png",
+      "sha256": "3aad6a269ea9cb8c5fd174f9022873ee00a4afbd67a2ff9e28d2e5d4f9b8657c"
+    },
+    {
+      "file": "5.png",
+      "sha256": "92045a4da3cef375fe48c4293adb2738acefa61c56e26e739715f5f603f4d9d8"
+    }
+  ]
+}

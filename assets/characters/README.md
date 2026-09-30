@@ -40,3 +40,7 @@ assets/characters/
 ## 拖起姿势
 
 已接收两人的 `drag_up/` 原图和方向规则；打开 `scenes/DragPreview.tscn` 按 F6 可用鼠标试拖。魏无羡左右独立图，蓝忘机单图镜像。见 [拖起素材与预览说明](DRAG_PREVIEW.md)。
+
+## 对视
+
+两人各 5 帧已按待机首帧做固定位置对齐，必须魏无羡在左、蓝忘机在右，不镜像。打开 `scenes/EyeContactPreview.tscn` 按 F6；1／2 对比首帧，空格重播。默认速度已确认为 4 FPS，可用 ↑ / ↓ 试调。见 [对视素材与对齐说明](EYE_CONTACT.md)。
