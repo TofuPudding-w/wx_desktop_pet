@@ -1,7 +1,15 @@
 {
-  "look_and_talk": {
-    "weight": 10, "trigger_distance": 180, "spacing": 110,
-    "cooldown": 30, "duration": 4, "approach_timeout": 5,
-    "dialogue": "first_meeting"
+  "natural_approach": {
+    "kind": "eye_contact",
+    "weight": 10,
+    "trigger_distance": 320,
+    "spacing": 160,
+    "cooldown": 30,
+    "duration": 7.5,
+    "approach_timeout": 5,
+    "fps": 4,
+    "hold": 2,
+    "layout": "A_left_B_right",
+    "approach_walk_stop": 40
   }
 }

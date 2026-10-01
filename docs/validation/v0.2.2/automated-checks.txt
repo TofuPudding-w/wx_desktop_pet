@@ -1,0 +1,58 @@
+test_runner
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+RESULT: 29 checks, 0 failures; simulated 7200 s, completed=168 cancelled=28
+
+test_app
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+CP Pet ready: backend=headless, pets=2, work_area=[P: (0.0, 0.0), S: (1280.0, 720.0)]
+APP RESULT: 22 checks, 0 failures
+
+test_artwork
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ARTWORK: 1524 checks, 0 failures
+
+test_eye_contact
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+EYE CONTACT: 24 checks, 0 failures
+
+test_drag_preview
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+DRAG PREVIEW: 35 checks, 0 failures
+
+python
+test_annotated_tag_supported (test_release.ReleaseTests.test_annotated_tag_supported) ... ok
+test_checksum_corruption_rejected (test_release.ReleaseTests.test_checksum_corruption_rejected) ... ok
+test_checksum_wrong_filename_rejected (test_release.ReleaseTests.test_checksum_wrong_filename_rejected) ... ok
+test_create_is_draft_prerelease_not_latest (test_release.ReleaseTests.test_create_is_draft_prerelease_not_latest) ... ok
+test_different_draft_asset_not_overwritten (test_release.ReleaseTests.test_different_draft_asset_not_overwritten) ... ok
+test_malformed_version_rejected (test_release.ReleaseTests.test_malformed_version_rejected) ... ok
+test_matching_draft_retry_does_not_upload_again (test_release.ReleaseTests.test_matching_draft_retry_does_not_upload_again) ... ok
+test_missing_package_file_rejected (test_release.ReleaseTests.test_missing_package_file_rejected) ... ok
+test_other_section_cannot_supply_version (test_release.ReleaseTests.test_other_section_cannot_supply_version) ... ok
+test_permission_error_is_not_treated_as_absent_release (test_release.ReleaseTests.test_permission_error_is_not_treated_as_absent_release) ... ok
+test_published_release_never_modified (test_release.ReleaseTests.test_published_release_never_modified) ... ok
+test_reject_missing_auth_and_malformed_repository (test_release.ReleaseTests.test_reject_missing_auth_and_malformed_repository) ... ok
+test_reject_unexpected_upload_host_before_sending_token (test_release.ReleaseTests.test_reject_unexpected_upload_host_before_sending_token) ... ok
+test_remote_tag_mismatch_prevents_creation (test_release.ReleaseTests.test_remote_tag_mismatch_prevents_creation) ... ok
+test_symlink_rejected (test_release.ReleaseTests.test_symlink_rejected) ... ok
+test_tag_mismatch_rejected (test_release.ReleaseTests.test_tag_mismatch_rejected) ... ok
+test_version_from_application_section (test_release.ReleaseTests.test_version_from_application_section) ... ok
+test_zip_excludes_unlisted_files_and_preserves_modes (test_release.ReleaseTests.test_zip_excludes_unlisted_files_and_preserves_modes) ... ok
+test_zip_is_reproducible (test_release.ReleaseTests.test_zip_is_reproducible) ... ok
+test_clean_early_exit_fails (test_soak.SoakGateTests.test_clean_early_exit_fails) ... ok
+test_complete_run_passes (test_soak.SoakGateTests.test_complete_run_passes) ... ok
+test_crash_fails (test_soak.SoakGateTests.test_crash_fails) ... ok
+test_missing_pet_fails (test_soak.SoakGateTests.test_missing_pet_fails) ... ok
+test_script_error_fails (test_soak.SoakGateTests.test_script_error_fails) ... ok
+test_stale_application_report_cannot_replace_wall_time (test_soak.SoakGateTests.test_stale_application_report_cannot_replace_wall_time) ... ok
+test_stalled_interactions_fail (test_soak.SoakGateTests.test_stalled_interactions_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.409s
+
+OK

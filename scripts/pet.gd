@@ -7,7 +7,7 @@ signal menu_requested(pet: Pet)
 enum State { IDLE, WALK, DRAGGED, FALL, APPROACH, INTERACT }
 var state: State = State.IDLE
 var character_id := "A"
-var display_name := "蓝蓝"
+var display_name := "魏无羡"
 var tint := Color("79b8ed")
 var speed := 80.0
 var foot := Vector2.ZERO
@@ -24,6 +24,11 @@ var state_time := 0.0
 var idle_duration := 2.0
 var animation_time := 0.0
 var target_x := 0.0
+var approach_walk_stop := 40.0
+var interaction_frame := -1
+var artwork: PetArtwork
+var art_sprite: Sprite2D
+var art_key := ""
 var font: Font = preload("res://assets/fonts/DroidSansFallbackFull.ttf")
 var rng := RandomNumberGenerator.new()
 
@@ -35,8 +40,15 @@ func configure(config: Dictionary, desktop: DesktopWindowController, initial: Ve
 	controller = desktop
 	foot = initial
 	rng.randomize()
-	idle_duration = rng.randf_range(1.5, 3.5)
+	idle_duration = rng.randf_range(6.0, 12.0)
 	controller.move_foot(foot)
+	artwork = PetArtwork.new()
+	artwork.setup(character_id)
+	art_sprite = Sprite2D.new()
+	art_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	art_sprite.position = DesktopWindowController.FOOT
+	add_child(art_sprite)
+	refresh_art()
 
 func change_state(next: State) -> void:
 	if state == next:
@@ -45,9 +57,12 @@ func change_state(next: State) -> void:
 	state = next
 	state_time = 0.0
 	if next == State.IDLE:
-		idle_duration = rng.randf_range(2.0, 4.0)
+		idle_duration = rng.randf_range(6.0, 12.0)
 	if next == State.FALL:
 		velocity_y = 0
+	if next != State.INTERACT:
+		interaction_frame = -1
+	refresh_art()
 	state_changed.emit(previous, state)
 
 func available() -> bool:
@@ -68,12 +83,17 @@ func _input(event: InputEvent) -> void:
 		input_button_events += 1
 		if "--trace-input" in OS.get_cmdline_user_args():
 			print("INPUT ", character_id, " ", event, " state=", State.keys()[state])
+		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			stop_drag()
+			return
+		# Let menu Controls handle their own left clicks instead of starting a drag.
+		if menu_open and DesktopWindowController.MENU.has_point(event.position):
+			return
+		if not event.pressed or artwork == null or not artwork.opaque_at(art_key, event.position):
+			return
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed and DesktopWindowController.BODY.has_point(event.position):
-				start_drag(Vector2(DisplayServer.mouse_get_position()))
-			elif not event.pressed:
-				stop_drag()
-		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			start_drag(Vector2(DisplayServer.mouse_get_position()))
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			menu_requested.emit(self)
 
 func _process(delta: float) -> void:
@@ -85,6 +105,7 @@ func _process(delta: float) -> void:
 			stop_drag()
 	step(minf(delta, 0.05), DesktopWindowController.work_area())
 	controller.move_foot(foot)
+	refresh_art()
 	queue_redraw()
 
 func step(delta: float, area: Rect2) -> void:
@@ -104,13 +125,16 @@ func step(delta: float, area: Rect2) -> void:
 					change_state(State.WALK)
 			State.WALK:
 				foot.x += facing * speed * delta
-				if foot.x <= area.position.x + 120 or foot.x >= area.end.x - 120:
+				if foot.x <= area.position.x + DesktopWindowController.FOOT.x or foot.x >= area.end.x - DesktopWindowController.FOOT.x:
 					facing *= -1
 					change_state(State.IDLE)
 				elif state_time >= 2.5:
 					change_state(State.IDLE)
 			State.APPROACH:
 				foot.x = move_toward(foot.x, target_x, speed * delta)
+				# Switch pose and position together: never slide using idle artwork.
+				if absf(foot.x - target_x) <= approach_walk_stop:
+					foot.x = target_x
 	foot = DesktopWindowController.clamp_foot(foot, area)
 
 func set_bubble(text: String) -> void:
@@ -119,46 +143,24 @@ func set_bubble(text: String) -> void:
 		controller.update_input(not text.is_empty() or menu_open)
 	queue_redraw()
 
-func _draw() -> void:
-	# Code-drawn placeholders: shared foot anchor, no external animation dependency.
-	var bob := sin(animation_time * 3) * 2
-	if state in [State.WALK, State.APPROACH]:
-		bob = absf(sin(animation_time * 12)) * -5
-	var center := Vector2(120, 164 + bob)
-	var dark := Color("253346")
-	draw_ellipse_shadow()
-	draw_circle(center + Vector2(-26, -39), 16, tint)
-	draw_circle(center + Vector2(26, -39), 16, tint)
-	draw_style_box(rounded(tint, 32), Rect2(80, 126 + bob, 80, 83))
-	var stride := sin(animation_time * 12) * 5 if state == State.WALK else 0.0
-	draw_style_box(rounded(tint.darkened(0.15), 10), Rect2(87, 205 + stride, 25, 24 - stride))
-	draw_style_box(rounded(tint.darkened(0.15), 10), Rect2(128, 205 - stride, 25, 24 + stride))
-	for eye_x in [-15, 15]:
-		draw_circle(center + Vector2(eye_x + facing * 3, -5), 4, dark)
-	draw_arc(center + Vector2(0, 3), 8, 0.15, PI - 0.15, 12, dark, 2, true)
-	draw_circle(center + Vector2(-26, 7), 7, Color(1, 0.65, 0.66, 0.6))
-	draw_circle(center + Vector2(26, 7), 7, Color(1, 0.65, 0.66, 0.6))
-	if state == State.DRAGGED:
-		draw_line(Vector2(87,180), Vector2(75,162), dark, 3, true)
-		draw_line(Vector2(153,180), Vector2(165,162), dark, 3, true)
-	if heart:
-		var p := Vector2(120, 111)
-		var pink := Color("ef7189")
-		draw_circle(p + Vector2(-5,-4), 6, pink)
-		draw_circle(p + Vector2(5,-4), 6, pink)
-		draw_colored_polygon(PackedVector2Array([p+Vector2(-11,-2),p+Vector2(11,-2),p+Vector2(0,11)]),pink)
-	if not bubble.is_empty():
-		draw_style_box(rounded(Color("fffaf0"), 14), Rect2(10, 12, 220, 74))
-		draw_colored_polygon(PackedVector2Array([Vector2(108,85),Vector2(130,85),Vector2(120,96)]),Color("fffaf0"))
-		draw_string(font, Vector2(24,38), display_name, HORIZONTAL_ALIGNMENT_LEFT, 192, 15, tint.darkened(0.45))
-		draw_string(font, Vector2(24,65), bubble, HORIZONTAL_ALIGNMENT_LEFT, 192, 17, dark)
-	if controller and controller.debug_mode:
-		draw_string(font, Vector2(8,101), State.keys()[state], HORIZONTAL_ALIGNMENT_LEFT, 220, 12, Color.WHITE)
+func refresh_art() -> void:
+	if artwork == null:
+		return
+	var seconds := 0.0 if paused or menu_open else state_time
+	var key := artwork.key_for(state, facing, seconds, interaction_frame, absf(foot.x - target_x) > 0.0)
+	if key == art_key:
+		return
+	art_key = key
+	var frame: Dictionary = artwork.frames[key]
+	art_sprite.texture = frame.texture
+	art_sprite.offset = frame.offset + frame.texture.get_size() * 0.5
+	art_sprite.scale = Vector2.ONE * frame.scale
+	art_sprite.flip_h = frame.flip
+	controller.update_input(menu_open or not bubble.is_empty(), frame.polygon)
 
-func draw_ellipse_shadow() -> void:
-	draw_set_transform(Vector2(120,230), 0, Vector2(1,0.18))
-	draw_circle(Vector2.ZERO, 44, Color(0.1,0.15,0.2,0.15))
-	draw_set_transform(Vector2.ZERO)
+func _draw() -> void:
+	if controller and controller.debug_mode:
+		draw_string(font, Vector2(12, 118), display_name + " · " + State.keys()[state], HORIZONTAL_ALIGNMENT_LEFT, 296, 14, Color.WHITE)
 
 static func rounded(color: Color, radius: int) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

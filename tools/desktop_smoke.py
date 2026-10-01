@@ -5,18 +5,25 @@ import time
 import sys
 
 root = Path(__file__).resolve().parents[1]
-engine = root / 'dist/CPPet-v0.1.0-Linux-x64/CPPet.x86_64'
+from release_metadata import release_metadata
+engine = root / 'dist' / release_metadata()['package'] / 'CPPet.x86_64'
 probe = root / 'tools/x11_probe.py'
 log = root / 'dist/desktop-smoke.log'
 with log.open('w') as output:
     preview = '--preview' in sys.argv
     app = subprocess.Popen([str(engine), '--display-driver', 'x11', '--', *([] if preview else ['--paused'])], cwd='/tmp', stdout=output, stderr=subprocess.STDOUT)
     try:
-        for _ in range(100):
+        for _ in range(300):
             if app.poll() is not None:
                 raise RuntimeError(f'App exited early: {app.returncode}')
-            tree = subprocess.check_output(['xwininfo', '-root', '-tree'], text=True)
+            try:
+                tree = subprocess.check_output(['xwininfo', '-root', '-tree'], text=True, stderr=subprocess.PIPE)
+            except subprocess.CalledProcessError:
+                # A desktop window can disappear during X11 tree enumeration.
+                time.sleep(.1)
+                continue
             if '"CP Pet B"' in tree:
+                time.sleep(1)
                 break
             time.sleep(.1)
         else:

@@ -21,7 +21,7 @@
 .tools/godot/Godot_v4.6.1-stable_linux.x86_64 --path . --display-driver x11 res://scenes/EyeContactPreview.tscn
 ```
 
-- 空格：同步重播，播完停留第 5 帧，不自动循环。
+- 空格：同步重播对视，停留 2 秒后顺序播放独立回身帧，最后回到待机。
 - 1：显示并冻结两人的待机首帧。
 - 2：显示并冻结两人的对视首帧，用于与 1 比较位置。
 - ↑ / ↓：调整试播速度。默认 **4 FPS，已由用户确认**；不更改待机 1 FPS 或走路 6 FPS。
@@ -36,3 +36,9 @@
 ```bash
 .tools/godot/Godot_v4.6.1-stable_linux.x86_64 --headless --path . --script tests/test_eye_contact.gd
 ```
+
+## 独立回身帧（v0.2.1）
+
+`eye_contact/turn_back/1.png`～`5.png` 按顺序以 4 FPS 播放，正式互动和预览均不再倒放对视帧。回身与对视保持同一缩放；魏无羡回身整组 offset 为 `(-259.5, -713)`（相对对视固定补偿 +23 原图像素），蓝忘机为 `(-262.5, -713)`。开头衔接对视、结尾衔接待机，原图不变；不逐帧重定位。
+
+正式靠近的 `approach_walk_stop: 40` 表示还剩 40px 时结束走路图，保留 APPROACH 预约，在同一次更新中直接到达最终站位并切换待机图，不播放待机滑动。走路截止间距为 200px，最终 160px 不变。参数在 `data/interactions.json`，蓝忘机保持原位置。

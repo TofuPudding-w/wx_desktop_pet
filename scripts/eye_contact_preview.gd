@@ -48,6 +48,8 @@ func _draw() -> void:
 	var status := "待机第 1 帧"
 	if $Pair.blocked:
 		status = "站位不符：必须魏无羡在左、蓝忘机在右，对视已禁用"
+	elif $Pair/WeiWuxian/TurnBack.visible:
+		status = "回身第 %d / 5 帧（独立原画）" % ($Pair/WeiWuxian/TurnBack/Sprite.frame + 1)
 	elif $Pair.showing_eye:
 		status = "对视第 %d / 5 帧" % ($Pair/WeiWuxian/EyeContact/Sprite.frame + 1)
 	draw_string(FONT, Vector2(25, 369), status, HORIZONTAL_ALIGNMENT_LEFT, 710, 18, Color("253346"))

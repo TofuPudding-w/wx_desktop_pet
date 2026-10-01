@@ -9,6 +9,9 @@ if [[ -x ./CPPet.x86_64 ]]; then
   exec ./CPPet.x86_64 --display-driver x11 "$@"
 fi
 engine="${GODOT_BIN:-godot}"
+if [[ -z "${GODOT_BIN:-}" && -x .tools/godot/Godot_v4.6.1-stable_linux.x86_64 ]]; then
+  engine="$PWD/.tools/godot/Godot_v4.6.1-stable_linux.x86_64"
+fi
 if ! command -v "$engine" >/dev/null 2>&1; then
   echo '未找到 Godot 4.6.1。设置 GODOT_BIN=/path/to/godot，或使用 dist 中的独立程序。' >&2
   exit 1

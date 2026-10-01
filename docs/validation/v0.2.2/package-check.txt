@@ -1,0 +1,2 @@
+PASS: SHA-256, ZIP CRC and executable permissions.
+PASS: clean extraction under /tmp, run.sh launched both desktop windows without editor or source tree; automatic exit after 15 seconds returned 0, no engine/script errors.

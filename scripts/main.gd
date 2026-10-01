@@ -64,7 +64,7 @@ func initialize() -> void:
 	print("CP Pet ready: backend=%s, pets=%d, work_area=%s" % [DisplayServer.get_name(), pets.size(), area])
 
 func initial_position(index: int) -> Vector2:
-	return DesktopWindowController.clamp_foot(Vector2(area.get_center().x + (-75 if index == 0 else 75), area.end.y - 8), area)
+	return DesktopWindowController.clamp_foot(Vector2(area.get_center().x + (-110 if index == 0 else 110), area.end.y - 8), area)
 
 func _process(delta: float) -> void:
 	if pets.is_empty():
@@ -108,8 +108,8 @@ func toggle_menu(pet: Pet) -> void:
 	pet.menu_open = true
 	pet.controller.update_input(true)
 	menu = PanelContainer.new()
-	menu.position = Vector2(10, 8)
-	menu.size = Vector2(220, 94)
+	menu.position = DesktopWindowController.MENU.position
+	menu.size = DesktopWindowController.MENU.size
 	menu.add_theme_stylebox_override("panel", Pet.rounded(Color("fffaf0"), 12))
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 0)
@@ -122,7 +122,7 @@ func toggle_menu(pet: Pet) -> void:
 func add_menu_button(parent: Control, label: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = label
-	button.custom_minimum_size = Vector2(220, 28)
+	button.custom_minimum_size = Vector2(260, 28)
 	button.add_theme_font_override("font", pets[0].font)
 	button.add_theme_font_size_override("font_size", 15)
 	button.add_theme_color_override("font_color", Color("253346"))
@@ -167,7 +167,7 @@ func write_report() -> void:
 		states.append({"id":pet.character_id, "state":Pet.State.keys()[pet.state],
 			"x":pet.foot.x, "y":pet.foot.y, "state_seconds":pet.state_time,
 			"paused":pet.paused, "menu_open":pet.menu_open, "available":pet.available(),
-			"input_button_events":pet.input_button_events})
+			"input_button_events":pet.input_button_events, "art":pet.art_key, "facing":pet.facing})
 	var report := {"elapsed_seconds":run_elapsed, "completed":interaction.completed,
 		"cancelled":interaction.cancelled, "phase":InteractionManager.Phase.keys()[interaction.phase],
 		"pets":states, "paused":paused, "menu_open":is_instance_valid(menu),

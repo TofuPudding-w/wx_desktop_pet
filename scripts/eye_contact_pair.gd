@@ -21,6 +21,7 @@ func show_idle() -> void:
 	blocked = false
 	for pet in [$WeiWuxian, $LanWangji]:
 		pet.get_node("EyeContact").hide()
+		pet.get_node("TurnBack").hide()
 		pet.get_node("Idle").show()
 		var sprite = pet.get_node("Idle/Sprite")
 		# Exact baseline frame for checking the transition; idle's resource stays 1 FPS.
@@ -60,12 +61,19 @@ func advance(delta: float) -> void:
 	if not playing:
 		return
 	elapsed += delta
-	var index := mini(int(elapsed * fps), 4)
-	# One clock advances both characters; no independent looping or mirroring.
-	for sprite in eye_sprites():
+	var forward := 5.0 / fps
+	var hold := 2.0
+	if elapsed >= 2 * forward + hold:
+		show_idle()
+		return
+	var returning := elapsed >= forward + hold
+	var index := mini(int((elapsed - forward - hold) * fps), 4) if returning else mini(int(elapsed * fps), 4)
+	for pet in [$WeiWuxian, $LanWangji]:
+		pet.get_node("EyeContact").visible = not returning
+		pet.get_node("TurnBack").visible = returning
+		var sprite = pet.get_node("TurnBack/Sprite" if returning else "EyeContact/Sprite")
 		sprite.frame = index
-	if elapsed >= 5.0 / fps:
-		playing = false
+		sprite.flip_h = false
 
 func set_fps(value: float) -> void:
 	# Keep the current fractional frame when changing preview speed.

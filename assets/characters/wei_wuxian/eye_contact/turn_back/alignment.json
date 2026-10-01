@@ -1,0 +1,42 @@
+{
+  "source_size": [
+    512,
+    713
+  ],
+  "fps": 4,
+  "sprite_offset": [
+    -259.5,
+    -713
+  ],
+  "scale": 0.3590462833099579,
+  "play_order": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "mirror_allowed": false,
+  "frames": [
+    {
+      "file": "1.png",
+      "sha256": "e877cb18bcaea208b0db93f0de9eff9eec1f2bf29fefba0305fce5ff962fe8a4"
+    },
+    {
+      "file": "2.png",
+      "sha256": "7307db3bb654ccec44003070de4d1c37e8a0b5944bb64c174cd798b87d9df4fd"
+    },
+    {
+      "file": "3.png",
+      "sha256": "10daef1861fd384fe760d44f50dff40ede2ad7bcdb69a550caa387a7a30f65a4"
+    },
+    {
+      "file": "4.png",
+      "sha256": "4538575aa1bd1a1c47faa59e73dc3b174e64afcb2754f455e15bf036db24f3fd"
+    },
+    {
+      "file": "5.png",
+      "sha256": "5d5c6f8f2c9bbd87a4ac3a7230f26880a8537641be178c7a836dacf5c8302fd4"
+    }
+  ]
+}

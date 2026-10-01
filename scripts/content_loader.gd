@@ -16,8 +16,8 @@ func read_json(path: String, fallback: Variant) -> Variant:
 
 func characters(raw: Variant) -> Array[Dictionary]:
 	var defaults: Array[Dictionary] = [
-		{"id":"A", "name":"蓝蓝", "color":"79b8ed", "walk_speed":80.0},
-		{"id":"B", "name":"橙橙", "color":"f5b47b", "walk_speed":65.0}]
+		{"id":"A", "name":"魏无羡", "color":"79b8ed", "walk_speed":80.0},
+		{"id":"B", "name":"蓝忘机", "color":"f5b47b", "walk_speed":68.0}]
 	if not raw is Array or raw.size() != 2:
 		errors.append("characters: 需要两个角色，已使用默认角色")
 		return defaults
@@ -43,26 +43,17 @@ func interactions(raw: Variant, text: Variant) -> Dictionary:
 		var item: Variant = raw[id]
 		var okay := item is Dictionary
 		if okay:
-			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout"]:
+			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout", "fps", "hold", "approach_walk_stop"]:
 				if not positive(item.get(field)):
 					okay = false
 		if okay:
-			okay = item.get("dialogue") is String and text.has(item.dialogue)
+			okay = item.get("kind") == "eye_contact" and item.get("layout") == "A_left_B_right"
 		if okay:
-			var lines: Variant = text[item.dialogue]
-			okay = lines is Array and not lines.is_empty()
-			if okay:
-				for line in lines:
-					if not line is Dictionary or line.get("speaker") not in ["A", "B"]:
-						okay = false
-						break
-					if not line.get("text") is String or str(line.text).is_empty() or str(line.text).length() > 11:
-						okay = false
-						break
+			okay = item.duration > 10.0 / item.fps + item.hold and item.trigger_distance > item.spacing + item.approach_walk_stop
 		if okay:
 			valid[id] = item
 		else:
-			errors.append("interaction '%s': 参数或对白无效，该互动已禁用（每句最多 11 字）" % id)
+			errors.append("interaction '%s': 站位、动画参数或共同待机时长无效，该互动已禁用" % id)
 	return valid
 
 static func positive(value: Variant) -> bool:

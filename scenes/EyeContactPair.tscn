@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/eye_contact_pair.gd" id="1"]
 [ext_resource type="PackedScene" path="res://assets/characters/wei_wuxian/idle/Idle.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://assets/characters/lan_wangji/idle/Idle.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://assets/characters/wei_wuxian/eye_contact/EyeContact.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://assets/characters/lan_wangji/eye_contact/EyeContact.tscn" id="5"]
+
+[ext_resource type="PackedScene" path="res://assets/characters/wei_wuxian/eye_contact/turn_back/TurnBack.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://assets/characters/lan_wangji/eye_contact/turn_back/TurnBack.tscn" id="7"]
 
 [node name="EyeContactPair" type="Node2D"]
 script = ExtResource("1")
@@ -23,4 +26,9 @@ scale = Vector2(2, 2)
 
 [node name="Idle" parent="LanWangji" instance=ExtResource("3")]
 [node name="EyeContact" parent="LanWangji" instance=ExtResource("5")]
+visible = false
+
+[node name="TurnBack" parent="WeiWuxian" instance=ExtResource("6")]
+visible = false
+[node name="TurnBack" parent="LanWangji" instance=ExtResource("7")]
 visible = false
