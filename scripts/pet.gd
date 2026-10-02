@@ -10,6 +10,7 @@ var character_id := "A"
 var display_name := "魏无羡"
 var tint := Color("79b8ed")
 var speed := 80.0
+var size_factor := 1.0
 var foot := Vector2.ZERO
 var facing := 1.0
 var paused := false
@@ -38,6 +39,8 @@ func configure(config: Dictionary, desktop: DesktopWindowController, initial: Ve
 	tint = Color(config.get("color", "79b8ed"))
 	speed = float(config.get("walk_speed", 80))
 	controller = desktop
+	size_factor = desktop.scale_factor
+	scale = Vector2.ONE * size_factor
 	foot = initial
 	rng.randomize()
 	idle_duration = rng.randf_range(6.0, 12.0)
@@ -87,9 +90,9 @@ func _input(event: InputEvent) -> void:
 			stop_drag()
 			return
 		# Let menu Controls handle their own left clicks instead of starting a drag.
-		if menu_open and DesktopWindowController.MENU.has_point(event.position):
+		if menu_open and controller.menu_rect.has_point(event.position / size_factor):
 			return
-		if not event.pressed or artwork == null or not artwork.opaque_at(art_key, event.position):
+		if not event.pressed or artwork == null or not artwork.opaque_at(art_key, event.position / size_factor):
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			start_drag(Vector2(DisplayServer.mouse_get_position()))
@@ -111,9 +114,9 @@ func _process(delta: float) -> void:
 func step(delta: float, area: Rect2) -> void:
 	animation_time += delta
 	state_time += delta
-	var ground := area.end.y - 8.0
+	var ground := area.end.y - 8.0 * size_factor
 	if state == State.FALL:
-		velocity_y += 1200.0 * delta
+		velocity_y += 1200.0 * size_factor * delta
 		foot.y = minf(ground, foot.y + velocity_y * delta)
 		if foot.y >= ground:
 			change_state(State.IDLE)
@@ -121,21 +124,27 @@ func step(delta: float, area: Rect2) -> void:
 		match state:
 			State.IDLE:
 				if state_time >= idle_duration:
-					facing = -1.0 if rng.randf() < 0.5 else 1.0
-					change_state(State.WALK)
+					var direction := -1.0 if rng.randf() < 0.5 else 1.0
+					if not has_walk_room(direction, area):
+						direction *= -1
+					if has_walk_room(direction, area):
+						facing = direction
+						change_state(State.WALK)
+					else:
+						state_time = 0
+						idle_duration = rng.randf_range(6.0, 12.0)
 			State.WALK:
-				foot.x += facing * speed * delta
-				if foot.x <= area.position.x + DesktopWindowController.FOOT.x or foot.x >= area.end.x - DesktopWindowController.FOOT.x:
-					facing *= -1
+				foot.x += facing * speed * size_factor * delta
+				if (facing < 0 and foot.x <= area.position.x + DesktopWindowController.FOOT.x * size_factor) or (facing > 0 and foot.x >= area.end.x - DesktopWindowController.FOOT.x * size_factor):
 					change_state(State.IDLE)
 				elif state_time >= 2.5:
 					change_state(State.IDLE)
 			State.APPROACH:
-				foot.x = move_toward(foot.x, target_x, speed * delta)
+				foot.x = move_toward(foot.x, target_x, speed * size_factor * delta)
 				# Switch pose and position together: never slide using idle artwork.
 				if absf(foot.x - target_x) <= approach_walk_stop:
 					foot.x = target_x
-	foot = DesktopWindowController.clamp_foot(foot, area)
+	foot = DesktopWindowController.clamp_foot(foot, area, size_factor)
 
 func set_bubble(text: String) -> void:
 	bubble = text
@@ -167,3 +176,17 @@ static func rounded(color: Color, radius: int) -> StyleBoxFlat:
 	style.bg_color = color
 	style.set_corner_radius_all(radius)
 	return style
+
+func has_walk_room(direction: float, area: Rect2) -> bool:
+	var left := area.position.x + DesktopWindowController.FOOT.x * size_factor
+	var right := area.end.x - DesktopWindowController.FOOT.x * size_factor
+	var distance := foot.x - left if direction < 0 else right - foot.x
+	return distance >= speed * size_factor * 0.5
+
+func set_size_factor(value: float) -> void:
+	size_factor = value
+	scale = Vector2.ONE * value
+	controller.set_size_factor(value)
+	art_key = ""
+	refresh_art()
+	controller.move_foot(foot)

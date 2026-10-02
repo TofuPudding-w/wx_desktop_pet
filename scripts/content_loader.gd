@@ -43,7 +43,7 @@ func interactions(raw: Variant, text: Variant) -> Dictionary:
 		var item: Variant = raw[id]
 		var okay := item is Dictionary
 		if okay:
-			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout", "approach_walk_stop"]:
+			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout", "approach_walk_stop", "rest_after"]:
 				if not positive(item.get(field)):
 					okay = false
 		if okay:

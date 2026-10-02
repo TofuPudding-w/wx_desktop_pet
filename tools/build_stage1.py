@@ -12,6 +12,7 @@ import struct
 import subprocess
 import zipfile
 from release_metadata import ROOT, project_version
+from user_guide import render as render_user_guide
 
 TARGETS = {
     'linux': ('Linux x86_64', 'Linux-x64', 'CPPet.x86_64'),
@@ -27,7 +28,7 @@ LICENSES = {
 }
 
 def fingerprint():
-    paths = [ROOT / 'project.godot', ROOT / 'export_presets.cfg', ROOT / 'run.sh']
+    paths = [ROOT / 'project.godot', ROOT / 'export_presets.cfg', ROOT / 'run.sh', ROOT / 'docs/guide/START_HERE.template.html']
     for directory in ['assets', 'data', 'scenes', 'scripts', 'tools']:
         paths.extend(p for p in (ROOT / directory).rglob('*')
                      if p.is_file() and '__pycache__' not in p.parts)
@@ -79,9 +80,9 @@ def validate_archive(archive, target):
                 raise ValueError('macOS project resources missing')
 
 
-def build(target, engine, destination, build_id, source_digest):
+def build(target, engine, destination, build_id, source_digest, stage=1):
     preset, label, filename = TARGETS[target]
-    package_name = f'CPPet-stage1-{build_id}-{label}'
+    package_name = f'CPPet-stage{stage}-{build_id}-{label}'
     folder = destination / package_name
     folder.mkdir()
     log = destination / (label + '-export.log')
@@ -103,21 +104,25 @@ def build(target, engine, destination, build_id, source_digest):
             'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
             'working_tree_modified': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT)),
             'source_fingerprint': source_digest, 'engine': '4.6.1.stable',
-            'distribution': 'local-stage1-test-only', 'device_validation': 'pending',
+            'distribution': f'local-stage{stage}-test-only', 'device_validation': 'pending',
             'signing': 'ad-hoc only; not notarized' if target == 'macos' else 'unsigned',
             'built_utc': datetime.now(timezone.utc).isoformat()}
     (folder / 'BUILD_INFO.json').write_text(json.dumps(info, indent=2) + '\n')
-    shutil.copy2(ROOT / 'docs/testing/STAGE1_CHECKLIST.md', folder / 'TEST_CHECKLIST.md')
+    shutil.copy2(ROOT / f'docs/testing/STAGE{stage}_CHECKLIST.md', folder / 'TEST_CHECKLIST.md')
     (folder / 'licenses').mkdir()
     for source, name in LICENSES.items():
         shutil.copy2(ROOT / source, folder / 'licenses' / name)
     instructions = {
-        'linux': 'Extract, then run ./run.sh. X11/XWayland required.\nEye-only: ./run.sh -- --eye-demo\nHug-only: ./run.sh -- --hug-demo\n',
-        'windows': 'Extract the WHOLE ZIP before launching CPPet.exe or run.cmd. Keep CPPet.pck beside CPPet.exe.\nUse test-eye-contact.cmd / test-hug.cmd to isolate each interaction. Close existing pets first.\nUse diagnose.cmd if needed; logs: %LOCALAPPDATA%\\WangXianPet\\Stage1\\pet.log\n',
-        'macos': 'EXPERIMENTAL / UNVERIFIED ON macOS. Extract the ZIP and open the .app bundle.\nAd-hoc signed only, NOT Developer ID signed or notarized. Gatekeeper may prevent launch.\nDo not disable system-wide security. This build needs a Mac volunteer to validate launch and desktop behavior.\n',
+        'linux': 'Extract, then run ./run.sh. X11/XWayland required. Create desktop/menu shortcuts: python3 create-shortcut.py.\nEye-only: ./run.sh -- --eye-demo\nHug-only: ./run.sh -- --hug-demo\n',
+        'windows': 'Extract the WHOLE ZIP before launching CPPet.exe or run.cmd. Keep CPPet.pck beside CPPet.exe. Run create-shortcut.cmd for an optional desktop shortcut.\nUse test-eye-contact.cmd / test-hug.cmd to isolate each interaction. Close existing pets first.\nUse diagnose.cmd if needed; logs: %LOCALAPPDATA%\\WangXianPet\\Stage1\\pet.log\n',
+        'macos': 'EXPERIMENTAL / UNVERIFIED ON macOS. Extract the ZIP and open the .app bundle. Finder > Make Alias can create a desktop shortcut.\nAd-hoc signed only, NOT Developer ID signed or notarized. Gatekeeper may prevent launch.\nDo not disable system-wide security. This build needs a Mac volunteer to validate launch and desktop behavior.\n',
     }
-    (folder / 'README.txt').write_text('WangXian Desktop Pet - Stage 1 local test build\nNOT A NEW PUBLIC RELEASE. Device validation pending; see TEST_CHECKLIST.md.\n\n' + instructions[target] + '\nRight-click a character: pause/resume, reset positions, exit.\nWWX left / LWJ right, within 320px; shared 30-second cooldown.\nNo installer, update checker, saved settings, custom icon or temporary-hide menu in this stage.\n')
+    (folder / 'README.txt').write_text(f'WangXian Desktop Pet - Stage {stage} local test build\nOpen START_HERE.html for the illustrated offline guide.\nNOT A NEW PUBLIC RELEASE. Device validation pending; see TEST_CHECKLIST.md.\n\n' + instructions[target] + '\nRight-click a character: pause/resume, reset positions, Settings > pet size (100-200%) / automatic interactions, Interactions > eye contact / hug, Hide > right-click the screen-edge rabbit > Show pets, Help > offline user guide, exit.\nWWX left / LWJ right, within 320px; independent 30-second cooldown per interaction, plus a 5-second shared rest. Automatic and manual triggers follow the same rules. Cooldowns start on completion/cancellation and continue while paused or hidden.\nPet size, pause and automatic interactions are saved locally; large sizes are limited to fit the display.\nNo installer or update checker in this stage.\n')
+    (folder / 'START_HERE.html').write_text(render_user_guide(ROOT, target, project_version(), build_id), encoding='utf-8')
+    shutil.copy2(ROOT / 'assets/characters/icon/hiding_icon.png', folder / 'hiding_icon.png')
+    shutil.copy2(ROOT / 'assets/characters/icon/icon.png', folder / 'icon.png')
     if target == 'linux':
+        shutil.copy2(ROOT / 'tools/launchers/create_shortcut.py', folder / 'create-shortcut.py')
         shutil.copy2(ROOT / 'run.sh', folder / 'run.sh')
         (folder / 'run.sh').chmod(0o755)
         (folder / filename).chmod(0o755)
@@ -146,6 +151,7 @@ def build(target, engine, destination, build_id, source_digest):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--stage', type=int, choices=[1, 2, 3], default=1)
     parser.add_argument('--platform', choices=['all', *TARGETS], default='all')
     parser.add_argument('--godot', type=Path, default=ROOT / '.tools/godot/Godot_v4.6.1-stable_linux.x86_64')
     args = parser.parse_args()
@@ -155,14 +161,14 @@ def main():
     subprocess.run([str(engine), '--headless', '--editor', '--path', str(ROOT), '--import', '--quit'], cwd=ROOT, check=True)
     digest = fingerprint()
     build_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + digest[:8]
-    destination = ROOT / 'dist/stage1' / build_id
+    destination = ROOT / f'dist/stage{args.stage}' / build_id
     destination.mkdir(parents=True)
     targets = list(TARGETS) if args.platform == 'all' else [args.platform]
-    packages = {target: str(build(target, engine, destination, build_id, digest)) for target in targets}
+    packages = {target: str(build(target, engine, destination, build_id, digest, args.stage)) for target in targets}
     if fingerprint() != digest:
         raise ValueError('Build inputs changed while exporting; do not distribute this test batch')
     (destination / 'packages.json').write_text(json.dumps(packages, indent=2) + '\n')
-    (ROOT / 'dist/stage1/latest.json').write_text(json.dumps({'build_id': build_id, 'packages': packages}, indent=2) + '\n')
+    (ROOT / f'dist/stage{args.stage}/latest.json').write_text(json.dumps({'build_id': build_id, 'packages': packages}, indent=2) + '\n')
 
 if __name__ == '__main__':
     main()

@@ -12,6 +12,7 @@ func run() -> void:
 	for pair in [[0.0, 0], [0.166, 0], [1.0/6, 1], [1.0/3, 2], [0.832, 2], [5.0/6, 3], [1.333, 3], [4.0/3, 2], [7.0/3, 2], [3.333, 3], [10.0/3, -1], [3.5, -1]]:
 		check(HugSequence.frame_at(pair[0]) == pair[1], "mixed duration boundary %s" % str(pair))
 	var app = load("res://scenes/Main.tscn").instantiate()
+	app.settings_path = ""
 	root.add_child(app)
 	await process_frame
 	await process_frame
@@ -31,6 +32,8 @@ func run() -> void:
 	check(is_equal_approx(HugSequence.total_duration(), float(hug.duration)), "configured duration includes entry and repetitions only")
 	for dragged_index in 2:
 		manager.cancel()
+		manager.cooldowns.clear()
+		manager.rest_remaining = 0
 		app.reset_positions()
 		manager.begin("hug", app.area)
 		var a: Pet = app.pets[0]
@@ -58,7 +61,7 @@ func run() -> void:
 		for pet in app.pets:
 			check(pet.art_sprite.visible and not pet.controller.window.mouse_passthrough, "sprites and input restored")
 		check(app.pets[dragged_index].state == Pet.State.DRAGGED, "drag state preserved")
-		check(manager.cooldowns.natural_approach > 0 and manager.cooldowns.hug > 0, "shared cooldown prevents immediate other interaction")
+		check(manager.cooldowns.get("natural_approach", 0) <= 0 and manager.cooldowns.hug > 0 and manager.rest_remaining == 5, "hug cools independently with a short shared rest")
 	app.reset_positions()
 	manager.begin("hug", app.area)
 	app.pets[0].foot.x = app.pets[0].target_x
@@ -69,6 +72,21 @@ func run() -> void:
 	manager.step(1.0/30 + 0.00001, app.area)
 	app.hug_overlay.sync()
 	check(manager.phase == InteractionManager.Phase.FREE and not app.hug_overlay.visible, "completion restores independent idle")
+	for requested in [1.25, 1.5, 2.0]:
+		app.apply_size(requested, false)
+		app.reset_positions()
+		manager.begin("hug", app.area)
+		var factor: float = app.size_factor
+		check(is_equal_approx(app.pets[1].foot.x - app.pets[0].target_x, HugSequence.SPACING * factor), "scaled hug anchor spacing")
+		app.pets[0].foot.x = app.pets[0].target_x
+		manager.step(0.01, app.area)
+		app.hug_overlay.sync()
+		check(app.hug_overlay.sprite.scale.is_equal_approx(Vector2.ONE * HugSequence.SCALE * factor), "combined sprite uses same artwork scale")
+		check(app.hug_overlay.position == Vector2i((app.pets[1].foot - HugOverlay.ORIGIN * factor).round()), "combined window anchored to scaled feet")
+		app.hug_overlay.sync()
+		check(app.hug_overlay.sprite.scale.is_equal_approx(Vector2.ONE * HugSequence.SCALE * factor), "repeated sync does not compound scaling")
+		app.apply_size(1.0, false)
+		check(not app.hug_overlay.visible and app.pets[0].art_sprite.visible and manager.phase == InteractionManager.Phase.FREE, "resizing during hug restores both pets")
 	app.queue_free()
 	await process_frame
 	print("HUG: %d checks, %d failures" % [checks, failures])

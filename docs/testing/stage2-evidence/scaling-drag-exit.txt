@@ -1,0 +1,109 @@
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 218,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    588,
+    624
+  ],
+  "position_after": [
+    648,
+    564
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 243,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    918,
+    624
+  ],
+  "position_after": [
+    978,
+    564
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (648, 624)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 289,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    513,
+    432
+  ],
+  "position_after": [
+    593,
+    347
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 324,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    953,
+    432
+  ],
+  "position_after": [
+    1033,
+    352
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (593, 432)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 143,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    863,
+    816
+  ],
+  "position_after": [
+    903,
+    790
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 160,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    1083,
+    816
+  ],
+  "position_after": [
+    1123,
+    784
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (903, 816)
+/tmp/cp-pet-menu.png
+Exit menu closed both windows
+PASS: exported app alpha, hit regions, both drags, focus, menu and whole-process exit

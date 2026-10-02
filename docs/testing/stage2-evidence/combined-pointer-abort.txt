@@ -1,0 +1,122 @@
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 218,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    588,
+    624
+  ],
+  "position_after": [
+    648,
+    571
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 243,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    918,
+    624
+  ],
+  "position_after": [
+    1440,
+    624
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (648, 624)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 289,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    436,
+    432
+  ],
+  "position_after": [
+    516,
+    352
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 324,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    1280,
+    432
+  ],
+  "position_after": [
+    1280,
+    382
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (516, 432)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1800055",
+  "input_rectangle_count": 143,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    867,
+    816
+  ],
+  "position_after": [
+    907,
+    776
+  ]
+}
+{
+  "window": "0x180005b",
+  "input_rectangle_count": 160,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    1249,
+    816
+  ],
+  "position_after": [
+    1289,
+    776
+  ]
+}
+pointer child: 0x1800055 target: 0x1800055 position: (907, 816)
+/tmp/cp-pet-menu.png
+PASS: both pets hidden; checking automatic return in one minute
+PASS: one-minute hide restored both pets
+pointer child: 0x180157d target: 0x180157d position: (907, 816)
+/tmp/cp-pet-menu.png
+Traceback (most recent call last):
+  File "/home/lumos/Documents/wx_desktop_pet/tools/x11_probe.py", line 59, in <module>
+    assert child()==w, 'Menu not under pointer; no click sent'
+           ^^^^^^^^^^
+AssertionError: Menu not under pointer; no click sent
+Traceback (most recent call last):
+  File "/home/lumos/Documents/wx_desktop_pet/tools/desktop_smoke.py", line 74, in <module>
+    subprocess.run(['python3', str(probe), *arguments], check=True)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', '/home/lumos/Documents/wx_desktop_pet/tools/x11_probe.py', 'A', '--exit-menu']' returned non-zero exit status 1.

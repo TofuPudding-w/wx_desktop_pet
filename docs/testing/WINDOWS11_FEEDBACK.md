@@ -23,3 +23,7 @@ Fill in PASS / FAIL / NOT TESTED:
 
 If a failure occurs, describe the action, expected/actual behavior, whether it happens repeatedly, and which launcher you used.
 Use diagnose.cmd to capture pet.log and telemetry.json under %LOCALAPPDATA%\WangXianPet\Stage1\.
+
+## Follow-up build: 20261002T091131Z-13c5fb54
+
+2026-10-02: User reports all Windows tests completed and everything works correctly. This includes the requested size/settings and screen-boundary follow-up. Exact additional display-scale values were not supplied, so no values are inferred. Original build feedback above is retained as historical evidence.

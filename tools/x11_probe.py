@@ -13,13 +13,19 @@ d=x.XOpenDisplay(None); assert d, 'No X11 display'; root=x.XDefaultRootWindow(d)
 tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
 match=re.search(r'(0x[0-9a-f]+) "CP Pet '+re.escape(sys.argv[1] if len(sys.argv)>1 else 'M0'),tree); assert match, tree
 w=int(match[1],16)
+geometry=subprocess.check_output(['xwininfo','-id',hex(w)],text=True)
+width=int(re.search(r'Width: (\d+)',geometry)[1]); height=int(re.search(r'Height: (\d+)',geometry)[1])
+hidden = sys.argv[1] == "Hidden"
+factor=width/(232 if hidden else 320)
+body_x, body_y = (192,112) if hidden else (160,240)
+def px(value): return round(value*factor)
 if '--alpha' in sys.argv:
  x.XGetImage.argtypes=[P,U,I,I,c.c_uint,c.c_uint,U,I]; x.XGetImage.restype=P
  x.XGetPixel.argtypes=[P,I,I]; x.XGetPixel.restype=U
  x.XDestroyImage.argtypes=[P]
- img=x.XGetImage(d,w,0,0,320,384,0xffffffff,2)
+ img=x.XGetImage(d,w,0,0,width,height,0xffffffff,2)
  assert img
- outside=x.XGetPixel(img,0,0); body=x.XGetPixel(img,160,240)
+ outside=x.XGetPixel(img,0,0); body=x.XGetPixel(img,px(body_x),px(body_y))
  x.XDestroyImage(img)
  print(json.dumps({'background_pixel':hex(outside),'body_pixel':hex(body),'background_alpha':outside>>24,'body_alpha':body>>24}))
  assert outside>>24==0 and body>>24==255
@@ -34,12 +40,12 @@ def pos():
 def focus():
  a=U(); b=I(); x.XGetInputFocus(d,c.byref(a),c.byref(b)); return a.value
 def move(a,b):
- x.XWarpPointer(d,0,root,0,0,0,0,a,b); x.XFlush(d); time.sleep(.2)
+ xt.XTestFakeMotionEvent(d,-1,a,b,0); x.XFlush(d); time.sleep(.2)
 def child():
  r=U(); ch=U(); a=I(); b=I(); z=I(); q=I(); mask=c.c_uint(); x.XQueryPointer(d,root,c.byref(r),c.byref(ch),c.byref(a),c.byref(b),c.byref(z),c.byref(q),c.byref(mask)); return ch.value
 def body_target():
  for _ in range(5):
-  a,b=pos(); move(a+160,b+240)
+  a,b=pos(); move(a+px(body_x),b+px(body_y))
   if child()==w: return a,b
  raise RuntimeError('Pointer did not land on pet; no click sent. Do not operate the mouse during this test.')
 if '--menu' in sys.argv:
@@ -48,20 +54,28 @@ if '--menu' in sys.argv:
  subprocess.run(['import','-window',hex(w),'/tmp/cp-pet-menu.png'],check=True)
  print('/tmp/cp-pet-menu.png')
  sys.exit(0)
-if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu']):
- row=80 if '--exit-menu' in sys.argv else (50 if '--reset-menu' in sys.argv else 22)
- a,b=pos(); move(a+160,b+row)
+if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','--settings-menu','--size150-menu','--size200-menu','--size100-menu','--size-menu','--hide-menu','--restore-menu','--exit-hidden-menu','--help-menu','--guide-menu']):
+ rows={'--exit-menu':190,'--reset-menu':50,'--pause-menu':22,'--settings-menu':78,'--size-menu':22,'--hide-menu':134,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':162,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
+ row=next(value for flag,value in rows.items() if flag in sys.argv)
+ for _ in range(5):
+  a,b=pos(); move(a+px(112 if hidden else 160),b+px(row))
+  if child()==w: break
  assert child()==w, 'Menu not under pointer; no click sent'
  xt.XTestFakeButtonEvent(d,1,1,0); x.XFlush(d); time.sleep(.1)
  xt.XTestFakeButtonEvent(d,1,0,0); x.XFlush(d); time.sleep(.5)
- if '--exit-menu' in sys.argv:
+ if '--exit-menu' in sys.argv or '--exit-hidden-menu' in sys.argv:
   tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
   assert '"CP Pet ' not in tree, 'Exit must close both windows'
   print('Exit menu closed both windows')
  sys.exit(0)
+if '--icon-input' in sys.argv:
+ a,b=pos(); before=focus(); move(a+px(5),b+px(120)); assert child()!=w, 'Transparent icon surroundings block clicks'
+ body_target(); assert focus()==before, 'Icon stole focus'
+ print('PASS: restore icon hit region, click-through and focus')
+ sys.exit(0)
 n=I(); order=I(); rs=ext.XShapeGetRectangles(d,w,2,c.byref(n),c.byref(order))
 rects=[(rs[i].x,rs[i].y,rs[i].w,rs[i].h) for i in range(n.value)]
-a,b=pos(); before=focus(); move(a+5,b+120); outside=child(); a,b=body_target(); inside=child()
-xt.XTestFakeButtonEvent(d,1,1,0); x.XFlush(d); time.sleep(.15); move(a+200,b+170); xt.XTestFakeButtonEvent(d,1,0,0); x.XFlush(d); time.sleep(.25)
+a,b=pos(); before=focus(); move(a+px(5),b+px(120)); outside=child(); a,b=body_target(); inside=child()
+xt.XTestFakeButtonEvent(d,1,1,0); x.XFlush(d); time.sleep(.15); move(a+px(body_x-180 if hidden else 200),b+px(body_y-90 if hidden else 170)); xt.XTestFakeButtonEvent(d,1,0,0); x.XFlush(d); time.sleep(.25)
 after=pos(); result={'window':hex(w),'input_rectangle_count':len(rects),'transparent_point_passes':outside!=w,'body_receives':inside==w,'moved':after!=(a,b),'focus_unchanged':focus()==before,'position_before':[a,b],'position_after':after}
 print(json.dumps(result,indent=2)); assert all(result[k] for k in ['transparent_point_passes','body_receives','moved','focus_unchanged'])

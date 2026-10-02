@@ -1,0 +1,29 @@
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+{"background_pixel": "0x0", "body_pixel": "0xffffffff", "background_alpha": 0, "body_alpha": 255}
+PASS: restore icon hit region, click-through and focus
+{
+  "window": "0x180042d",
+  "input_rectangle_count": 38,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    1688,
+    504
+  ],
+  "position_after": [
+    1508,
+    414
+  ]
+}
+pointer child: 0x180042d target: 0x180042d position: (1508, 414)
+/tmp/cp-pet-menu.png
+PASS: hide replaces pets with draggable icon; icon menu restores both
+pointer child: 0x1800850 target: 0x1800850 position: (723, 816)
+/tmp/cp-pet-menu.png
+pointer child: 0x1800a84 target: 0x1800a84 position: (1508, 414)
+/tmp/cp-pet-menu.png
+Exit menu closed both windows
+PASS: restore icon alpha, hit regions, drag, focus, restore menu and whole-process exit

@@ -5,7 +5,7 @@
 | 平台 | 当前结果 |
 |---|---|
 | Ubuntu 24.04 / GNOME Wayland + XWayland | 原生窗口检查与短测通过；并非所有 Linux 桌面均已支持 |
-| Windows 11 / Intel x64 / 100% | x64 导出及 ZIP／PE／PCK 检查通过，等待用户实机反馈 |
+| Windows 11 / Intel x64 / 100% | 用户反馈该构建核心检查及 15 分钟运行 PASS；额外系统缩放／休眠恢复尚未测试 |
 | macOS Universal 2 | x64 + arm64 架构、ZIP、.app 结构及执行权限检查通过；仅 ad-hoc 签名，未 notarize；无实机验证 |
 
 ## Ubuntu 实测
@@ -30,3 +30,18 @@
 Windows 反馈通过之前，不宣称 Stage 1 跨平台验收完成。macOS 始终保持实验／未验证标注，等待志愿者实测。
 
 原始检查记录见 stage1-evidence/；导出日志、包与校验文件在 dist/stage1/20261002T052143Z-27932d36/。
+
+## 2026-10-02：大小设置与边界修复
+
+后续测试构建：`20261002T091131Z-13c5fb54`，仍为 0.2.2 开发版，未发布新 Release。
+
+- 新增右键「设置 · 角色大小」，100%／125%／150%／175%／200%，本机保存；小屏幕限制实际大小。两人、拥抱、输入区域及互动距离同步缩放，动画 FPS 保持不变。
+- 待机结束前先判断可行方向；边界处仅向内走，没有足够空间则继续待机，消除向外启动又立即停止的闪烁。
+- 自动检查通过：行为 29、入口／大小／边界 849、拥抱 289、美术 1524、对视 24、拖拽预览 35；Python 29 项通过。模拟 7200 秒不是实际两小时测试。
+- 新 Linux 导出包原生测试通过：菜单切换 150% → 200% → 100%，透明背景、穿透、双方拖拽、焦点保持、窗口实际尺寸及整体退出。新增证据见 `stage1-evidence/size-native.txt`。
+- 已填写的 Windows 反馈属于前一个构建，原文件保持不变；新构建需在 Windows 补测设置保存、大小、边界及互动。macOS 仍为实验、未实机验证。
+- Windows 系统缩放测试和桌宠自身大小是两个独立设置，步骤见 STAGE1_CHECKLIST.md。
+
+## Stage 1 closure
+
+2026-10-02: User reports all Windows tests for the follow-up build passed. Stage 1 is accepted for the tested Ubuntu environment and Windows 11 Intel x64. macOS remains experimental/unverified; the user's Windows report does not certify macOS or every Windows configuration. Next: Stage 2 everyday controls.

@@ -1,0 +1,86 @@
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+DEBUG factor 1.0 origin (723, 816) target 0x1800055 actual 0x1800055 row 134
+
+xwininfo: Window id: 0x1800055 "CP Pet A"
+
+  Absolute upper-left X:  723
+  Absolute upper-left Y:  816
+  Relative upper-left X:  723
+  Relative upper-left Y:  816
+  Width: 320
+  Height: 384
+  Depth: 32
+  Visual: 0x1e3
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x1800053 (not installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: yes
+  Map State: IsViewable
+  Override Redirect State: yes
+  Corners:  +723+816  -877+816  -877-0  +723-0
+  -geometry 320x384+723-0
+
+
+DEBUG factor 1.0 origin (723, 816) target 0x1800055 actual 0x1800055 row 22
+
+xwininfo: Window id: 0x1800055 "CP Pet A"
+
+  Absolute upper-left X:  723
+  Absolute upper-left Y:  816
+  Relative upper-left X:  723
+  Relative upper-left Y:  816
+  Width: 320
+  Height: 384
+  Depth: 32
+  Visual: 0x1e3
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x1800053 (not installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: yes
+  Map State: IsViewable
+  Override Redirect State: yes
+  Corners:  +723+816  -877+816  -877-0  +723-0
+  -geometry 320x384+723-0
+
+
+PASS: both pets hidden; checking automatic return in one minute
+PASS: one-minute hide restored both pets
+pointer child: 0x1800303 target: 0x1800303 position: (723, 816)
+/tmp/cp-pet-menu.png
+DEBUG factor 1.0 origin (723, 816) target 0x1800303 actual 0x1800303 row 162
+
+xwininfo: Window id: 0x1800303 "CP Pet A"
+
+  Absolute upper-left X:  723
+  Absolute upper-left Y:  816
+  Relative upper-left X:  723
+  Relative upper-left Y:  816
+  Width: 320
+  Height: 384
+  Depth: 32
+  Visual: 0x1e3
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x180005d (not installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: yes
+  Map State: IsViewable
+  Override Redirect State: yes
+  Corners:  +723+816  -877+816  -877-0  +723-0
+  -geometry 320x384+723-0
+
+
+Exit menu closed both windows
+PASS: exported app alpha, hit regions, both drags, focus, menu and whole-process exit

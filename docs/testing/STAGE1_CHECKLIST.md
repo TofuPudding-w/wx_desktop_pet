@@ -56,3 +56,12 @@ Windows and macOS exports are not evidence of native desktop compatibility.
 - Linux: ./run.sh --log-file /tmp/wx-stage1.log -- --telemetry=/tmp/wx-stage1.json
 - Include this filled checklist and optionally a short recording. Do not mark untested items passed.
 - No need to install development tools on Windows. Do not disable system-wide security to run experimental builds.
+
+## Pet size and screen-edge regression (follow-up build)
+
+- Right-click either pet → 设置 · 角色大小 → 100% / 125% / 150% / 175% / 200%. Both characters and the hug must resize together, preserving their relative heights. FPS stays unchanged.
+- Close and restart: the chosen pet size must be restored. Large choices are capped to fit the usable display area.
+- At 150% and 200%, drag each pet, click the transparent surroundings, open/close settings, trigger/cancel eye contact and hug, and exit. Check for clipped artwork or invisible blocking areas.
+- Drag each pet to the left and right limits. After settling, it should walk inward or remain idle; it must not briefly walk outward and flash back to idle.
+- Windows OS scaling is separate: Settings → System → Display → Scale & layout → Scale → 125% or 150%. Keep the recommended resolution, close/restart the pet, then repeat dragging, boundaries, transparency and interaction checks. Record both OS scale and pet size. Restore your preferred OS scale afterward.
+- Additional OS scaling and sleep/wake remain unverified until tested on the device. Earlier Windows feedback applies to its recorded build only.

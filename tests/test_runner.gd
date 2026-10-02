@@ -63,6 +63,7 @@ func _initialize() -> void:
 	manager.step(6, area)
 	check(manager.phase == InteractionManager.Phase.FREE and a.available() and b.available(), "approach timeout releases both")
 	manager.cooldowns.clear()
+	manager.rest_remaining = 0
 	a.foot.x = 800
 	b.foot.x = 640
 	manager.step(1, area)
@@ -75,6 +76,7 @@ func _initialize() -> void:
 	check(manager.phase == InteractionManager.Phase.FREE, "order change cancels active approach")
 	a.foot = Vector2(500, 712)
 	manager.cooldowns.clear()
+	manager.rest_remaining = 0
 	manager.step(0.01, area)
 	b.menu_open = true
 	manager.step(0.01, area)
