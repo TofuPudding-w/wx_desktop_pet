@@ -13,6 +13,8 @@ func run() -> void:
 	root.add_child(app)
 	await process_frame
 	await process_frame
+	app.interaction.cancel()
+	app.interaction.pool = {"natural_approach": app.interaction.pool.natural_approach}
 	check(app.pets.size() == 2, "app creates two pets")
 	check(app.pets[0].get_window() != app.pets[1].get_window(), "pets have separate windows")
 	app.toggle_menu(app.pets[0])

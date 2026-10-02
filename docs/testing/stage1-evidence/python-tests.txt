@@ -1,0 +1,34 @@
+test_annotated_tag_supported (test_release.ReleaseTests.test_annotated_tag_supported) ... ok
+test_checksum_corruption_rejected (test_release.ReleaseTests.test_checksum_corruption_rejected) ... ok
+test_checksum_wrong_filename_rejected (test_release.ReleaseTests.test_checksum_wrong_filename_rejected) ... ok
+test_create_is_draft_prerelease_not_latest (test_release.ReleaseTests.test_create_is_draft_prerelease_not_latest) ... ok
+test_different_draft_asset_not_overwritten (test_release.ReleaseTests.test_different_draft_asset_not_overwritten) ... ok
+test_malformed_version_rejected (test_release.ReleaseTests.test_malformed_version_rejected) ... ok
+test_matching_draft_retry_does_not_upload_again (test_release.ReleaseTests.test_matching_draft_retry_does_not_upload_again) ... ok
+test_missing_package_file_rejected (test_release.ReleaseTests.test_missing_package_file_rejected) ... ok
+test_other_section_cannot_supply_version (test_release.ReleaseTests.test_other_section_cannot_supply_version) ... ok
+test_permission_error_is_not_treated_as_absent_release (test_release.ReleaseTests.test_permission_error_is_not_treated_as_absent_release) ... ok
+test_published_release_never_modified (test_release.ReleaseTests.test_published_release_never_modified) ... ok
+test_reject_missing_auth_and_malformed_repository (test_release.ReleaseTests.test_reject_missing_auth_and_malformed_repository) ... ok
+test_reject_unexpected_upload_host_before_sending_token (test_release.ReleaseTests.test_reject_unexpected_upload_host_before_sending_token) ... ok
+test_remote_tag_mismatch_prevents_creation (test_release.ReleaseTests.test_remote_tag_mismatch_prevents_creation) ... ok
+test_symlink_rejected (test_release.ReleaseTests.test_symlink_rejected) ... ok
+test_tag_mismatch_rejected (test_release.ReleaseTests.test_tag_mismatch_rejected) ... ok
+test_version_from_application_section (test_release.ReleaseTests.test_version_from_application_section) ... ok
+test_zip_excludes_unlisted_files_and_preserves_modes (test_release.ReleaseTests.test_zip_excludes_unlisted_files_and_preserves_modes) ... ok
+test_zip_is_reproducible (test_release.ReleaseTests.test_zip_is_reproducible) ... ok
+test_clean_early_exit_fails (test_soak.SoakGateTests.test_clean_early_exit_fails) ... ok
+test_complete_run_passes (test_soak.SoakGateTests.test_complete_run_passes) ... ok
+test_crash_fails (test_soak.SoakGateTests.test_crash_fails) ... ok
+test_missing_pet_fails (test_soak.SoakGateTests.test_missing_pet_fails) ... ok
+test_script_error_fails (test_soak.SoakGateTests.test_script_error_fails) ... ok
+test_stale_application_report_cannot_replace_wall_time (test_soak.SoakGateTests.test_stale_application_report_cannot_replace_wall_time) ... ok
+test_stalled_interactions_fail (test_soak.SoakGateTests.test_stalled_interactions_fail) ... ok
+test_linux_permissions (test_stage1.Stage1ArchiveTests.test_linux_permissions) ... ok
+test_mac_universal_and_modes (test_stage1.Stage1ArchiveTests.test_mac_universal_and_modes) ... ok
+test_windows_resources_and_architecture (test_stage1.Stage1ArchiveTests.test_windows_resources_and_architecture) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.499s
+
+OK

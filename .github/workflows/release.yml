@@ -58,6 +58,7 @@ jobs:
           "$GODOT_BIN" --headless --path . --script tests/test_artwork.gd
           "$GODOT_BIN" --headless --path . --script tests/test_eye_contact.gd
           "$GODOT_BIN" --headless --path . --script tests/test_drag_preview.gd
+          "$GODOT_BIN" --headless --path . --script tests/test_hug.gd
           ./tools/export_linux.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

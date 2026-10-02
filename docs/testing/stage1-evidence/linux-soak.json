@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "run_id": "20261002T052302Z-63fae424",
+  "required_seconds": 120,
+  "two_hour_acceptance": false,
+  "started_utc": "2026-10-02T05:23:02.523253+00:00",
+  "binary": "/home/lumos/Documents/wx_desktop_pet/dist/stage1/20261002T052143Z-27932d36/CPPet-stage1-20261002T052143Z-27932d36-Linux-x64/CPPet.x86_64",
+  "binary_sha256": "a985e32c9d499c1f0d31ec96d7fcf0f55c1d967d9e35809a6efcd39971d90866",
+  "source_head_at_test": "10288e8bfe9de440af64cec5c9e0b15baa15ecf7",
+  "evidence_directory": "/home/lumos/Documents/wx_desktop_pet/dist/soak-runs/20261002T052302Z-63fae424",
+  "failures": [],
+  "samples": 26,
+  "peak_rss_kib": 310476,
+  "pid": 52586,
+  "elapsed_wall_seconds": 130.22,
+  "telemetry": {
+    "cancelled": 0,
+    "completed": 4,
+    "elapsed_seconds": 120.001126,
+    "memory_bytes": 0,
+    "menu_open": false,
+    "paused": false,
+    "pets": [
+      {
+        "art": "idle1",
+        "available": true,
+        "facing": 1.0,
+        "id": "A",
+        "input_button_events": 0,
+        "menu_open": false,
+        "paused": false,
+        "state": "IDLE",
+        "state_seconds": 3.75639122222222,
+        "x": 883.0,
+        "y": 1192.0
+      },
+      {
+        "art": "idle1",
+        "available": true,
+        "facing": -1.0,
+        "id": "B",
+        "input_button_events": 0,
+        "menu_open": false,
+        "paused": false,
+        "state": "IDLE",
+        "state_seconds": 3.75639122222222,
+        "x": 1103.0,
+        "y": 1192.0
+      }
+    ],
+    "phase": "FREE"
+  },
+  "exit_code": 0,
+  "finished_utc": "2026-10-02T05:25:12.967681+00:00",
+  "final_rss_kib": 310476
+}

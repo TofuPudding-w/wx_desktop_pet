@@ -2,6 +2,10 @@
 
 基于 Godot 4.6.1 / GDScript 的双角色同人桌宠。使用作者手绘的魏无羡、蓝忘机素材，两个透明、置顶窗口独立行走；可拖起、落下、自然靠近和对视。当前首版目标为 Ubuntu 自用。
 
+> 工作区新增未发布的拥抱试作：预览与运行方法见 [拥抱素材说明](assets/characters/hug/README.md)。已导出的 v0.2.2 包不包含这项试作。
+
+> 跨平台 Stage 1：本地测试包、构建命令及验收范围见 [平台基础验证](docs/testing/STAGE1_PLATFORM_FOUNDATION.md)。Windows/macOS 导出不代表实机验收通过。
+
 ## 启动
 
 在本仓库运行（自动使用已安装在 `.tools/` 的 Godot）：

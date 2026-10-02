@@ -9,6 +9,7 @@ var dialogues: Dictionary = {}
 var current: Dictionary = {}
 var cooldowns: Dictionary = {}
 var elapsed := 0.0
+var combined_frame := -1
 var paused := false
 var completed := 0
 var cancelled := 0
@@ -64,9 +65,13 @@ func step(delta: float, area: Rect2) -> void:
 			pets[1].facing = -1
 			for pet in pets:
 				pet.change_state(Pet.State.INTERACT)
-				pet.interaction_frame = 0
+				pet.interaction_frame = -1 if current.kind == "hug" else 0
+			if current.kind == "hug":
+				combined_frame = 0
 	elif phase == Phase.PLAYING:
-		var frame := eye_frame(elapsed)
+		var frame := -1 if current.kind == "hug" else eye_frame(elapsed)
+		if current.kind == "hug":
+			combined_frame = HugSequence.frame_at(elapsed, current.frame_durations, int(current.hold_repeats))
 		for pet in pets:
 			if pet.interaction_frame != frame and frame == -1:
 				pet.state_time = 0 # shared idle begins at the matching first frame
@@ -113,13 +118,15 @@ func cancel() -> void:
 
 func release() -> void:
 	dialogue.clear()
+	combined_frame = -1
 	for pet in pets:
 		pet.heart = false
 		pet.interaction_frame = -1
 		if pet.state in [Pet.State.APPROACH, Pet.State.INTERACT]:
 			pet.change_state(Pet.State.IDLE)
 	if current.has("id"):
-		cooldowns[current.id] = current.cooldown
+		for id in pool:
+			cooldowns[id] = current.cooldown
 	current = {}
 	phase = Phase.FREE
 	elapsed = 0

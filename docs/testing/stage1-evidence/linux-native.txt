@@ -1,0 +1,37 @@
+{"background_pixel": "0x0", "body_pixel": "0xff67616a", "background_alpha": 0, "body_alpha": 255}
+{
+  "window": "0x1a00007",
+  "input_rectangle_count": 143,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    723,
+    816
+  ],
+  "position_after": [
+    763,
+    776
+  ]
+}
+{
+  "window": "0x1a00055",
+  "input_rectangle_count": 160,
+  "transparent_point_passes": true,
+  "body_receives": true,
+  "moved": true,
+  "focus_unchanged": true,
+  "position_before": [
+    943,
+    816
+  ],
+  "position_after": [
+    983,
+    784
+  ]
+}
+pointer child: 0x1a00007 target: 0x1a00007 position: (763, 816)
+/tmp/cp-pet-menu.png
+Exit menu closed both windows
+PASS: exported app alpha, hit regions, both drags, focus, menu and whole-process exit

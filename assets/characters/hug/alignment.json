@@ -1,0 +1,51 @@
+{
+  "canvas": [
+    1024,
+    713
+  ],
+  "scale": 0.3590462833099579,
+  "first_frame_idle_offsets": {
+    "wei_wuxian": [
+      78,
+      0
+    ],
+    "lan_wangji": [
+      504,
+      0
+    ]
+  },
+  "anchor_in_canvas": {
+    "wei_wuxian": [
+      336.5,
+      713
+    ],
+    "lan_wangji": [
+      747.5,
+      713
+    ]
+  },
+  "spacing": 147.5680224403927,
+  "frame_durations": [
+    0.16666666666666666,
+    0.16666666666666666,
+    0.5,
+    0.5
+  ],
+  "sha256": {
+    "1.png": "b107f6883dc58f3b46c2d0a96d94780a9819d53b629b9d2076ef71fa4ba92930",
+    "2.png": "2dc1b6c0bd80ffc2a265d501f8ad4b1db375806e2b9775fe4fd50e023813fecc",
+    "3.png": "a597d0b338da1b3d4c91dc3e789ec2060fea24eca6be11b49e535c27644cb5b6",
+    "4.png": "c367eb35ac52987c7b312e2232dd371b5abcb9f500f0227703fe582d85a37e72"
+  },
+  "hold_repeats": 3,
+  "play_order": [
+    1,
+    2,
+    3,
+    4,
+    3,
+    4,
+    3,
+    4
+  ]
+}

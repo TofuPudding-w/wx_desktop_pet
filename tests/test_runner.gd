@@ -10,7 +10,8 @@ func check(condition: bool, message: String) -> void:
 func _initialize() -> void:
 	var loader := ContentLoader.new()
 	var pool := loader.interactions(loader.read_json("res://data/interactions.json", {}), {})
-	check(pool.size() == 1 and loader.errors.is_empty(), "bundled interaction valid")
+	check(pool.size() == 2 and loader.errors.is_empty(), "bundled interactions valid")
+	pool = {"natural_approach": pool.natural_approach}
 	for field in ["duration", "fps", "weight", "spacing", "approach_walk_stop"]:
 		var bad := pool.duplicate(true)
 		bad.natural_approach[field] = 0

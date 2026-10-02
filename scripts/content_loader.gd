@@ -43,13 +43,31 @@ func interactions(raw: Variant, text: Variant) -> Dictionary:
 		var item: Variant = raw[id]
 		var okay := item is Dictionary
 		if okay:
-			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout", "fps", "hold", "approach_walk_stop"]:
+			for field in ["weight", "trigger_distance", "spacing", "cooldown", "duration", "approach_timeout", "approach_walk_stop"]:
 				if not positive(item.get(field)):
 					okay = false
 		if okay:
-			okay = item.get("kind") == "eye_contact" and item.get("layout") == "A_left_B_right"
+			okay = item.get("kind") in ["eye_contact", "hug"] and item.get("layout") == "A_left_B_right"
 		if okay:
-			okay = item.duration > 10.0 / item.fps + item.hold and item.trigger_distance > item.spacing + item.approach_walk_stop
+			okay = item.trigger_distance > item.spacing + item.approach_walk_stop
+		if okay and item.kind == "eye_contact":
+			okay = positive(item.get("fps")) and positive(item.get("hold"))
+			if okay:
+				okay = item.duration > 10.0 / item.fps + item.hold
+		elif okay:
+			var durations: Variant = item.get("frame_durations")
+			okay = durations is Array and durations.size() == 4 and absf(float(item.spacing) - HugSequence.SPACING) < 0.01
+			var repeats: Variant = item.get("hold_repeats")
+			okay = okay and positive(repeats)
+			if okay:
+				okay = float(repeats) == floorf(float(repeats)) and float(repeats) <= 30
+			if okay:
+				for duration in durations:
+					if not positive(duration):
+						okay = false
+						break
+				if okay:
+					okay = absf(float(item.duration) - HugSequence.total_duration(durations, int(repeats))) < 0.001
 		if okay:
 			valid[id] = item
 		else:

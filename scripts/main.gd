@@ -3,6 +3,7 @@ extends Node
 const PET_SCENE := preload("res://scenes/Pet.tscn")
 var pets: Array[Pet] = []
 var interaction := InteractionManager.new()
+var hug_overlay: HugOverlay
 var debug_mode := false
 var paused := false
 var menu: PanelContainer
@@ -34,11 +35,16 @@ func initialize() -> void:
 		push_error("桌面模式需要 X11 后端：请使用 ./run.sh，或 --display-driver x11")
 		get_tree().quit(1)
 		return
+	print("PLATFORM ", JSON.stringify(DesktopPlatform.snapshot()))
 	area = DesktopWindowController.work_area()
 	var loader := ContentLoader.new()
 	var configs := loader.characters(loader.read_json("res://data/characters.json", []))
 	var dialogue_data: Variant = loader.read_json("res://data/dialogues.json", {})
 	var pool := loader.interactions(loader.read_json("res://data/interactions.json", {}), dialogue_data)
+	if "--eye-demo" in args and pool.has("natural_approach"):
+		pool = {"natural_approach": pool.natural_approach}
+	if "--hug-demo" in args and pool.has("hug"):
+		pool = {"hug": pool.hug}
 	for error in loader.errors:
 		push_warning(error)
 	var count := 1 if "--single" in args else 2
@@ -61,6 +67,10 @@ func initialize() -> void:
 		window.show()
 	interaction.setup(pets, pool, dialogue_data if dialogue_data is Dictionary else {})
 	interaction.paused = paused
+	hug_overlay = HugOverlay.new()
+	hug_overlay.visible = false
+	add_child(hug_overlay)
+	hug_overlay.setup(pets, interaction, debug_mode)
 	print("CP Pet ready: backend=%s, pets=%d, work_area=%s" % [DisplayServer.get_name(), pets.size(), area])
 
 func initial_position(index: int) -> Vector2:
@@ -82,6 +92,7 @@ func _process(delta: float) -> void:
 				if pet.state != Pet.State.DRAGGED:
 					pet.change_state(Pet.State.FALL)
 	interaction.step(minf(delta, 0.05), area)
+	hug_overlay.sync()
 	# Opt-in unattended soak: repeatedly bring idle pets together, without input injection.
 	if soak and interaction.phase == InteractionManager.Phase.FREE and pets.size() == 2:
 		if pets[0].available() and pets[1].available():

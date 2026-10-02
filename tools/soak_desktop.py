@@ -41,6 +41,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--seconds', type=int, default=7200,
                         help='Default 7200; shorter runs are smoke tests, never two-hour acceptance.')
+    parser.add_argument('--binary', type=Path, help='Test an isolated stage build instead of the release folder')
     args = parser.parse_args()
     if args.seconds < 60:
         parser.error('duration must be at least 60 seconds')
@@ -53,7 +54,7 @@ def main():
     except BlockingIOError:
         parser.error('another soak runner is already active')
     metadata = release_metadata()
-    binary = dist / metadata['package'] / 'CPPet.x86_64'
+    binary = args.binary.resolve() if args.binary else dist / metadata['package'] / 'CPPet.x86_64'
     digest = hashlib.sha256(binary.read_bytes()).hexdigest()
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid.uuid4().hex[:8]
     evidence = dist / 'soak-runs' / run_id

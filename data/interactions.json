@@ -11,5 +11,23 @@
     "hold": 2,
     "layout": "A_left_B_right",
     "approach_walk_stop": 40
+  },
+  "hug": {
+    "kind": "hug",
+    "weight": 10,
+    "trigger_distance": 320,
+    "spacing": 147.5680224403927,
+    "cooldown": 30,
+    "duration": 3.3333333333333335,
+    "approach_timeout": 5,
+    "layout": "A_left_B_right",
+    "approach_walk_stop": 40,
+    "frame_durations": [
+      0.16666666666666666,
+      0.16666666666666666,
+      0.5,
+      0.5
+    ],
+    "hold_repeats": 3
   }
 }

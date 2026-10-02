@@ -3,14 +3,22 @@ from pathlib import Path
 import subprocess
 import time
 import sys
+import argparse
 
 root = Path(__file__).resolve().parents[1]
 from release_metadata import release_metadata
-engine = root / 'dist' / release_metadata()['package'] / 'CPPet.x86_64'
+parser = argparse.ArgumentParser()
+parser.add_argument('--binary', type=Path)
+parser.add_argument('--preview', action='store_true')
+args = parser.parse_args()
+engine = args.binary.resolve() if args.binary else root / 'dist' / release_metadata()['package'] / 'CPPet.x86_64'
 probe = root / 'tools/x11_probe.py'
 log = root / 'dist/desktop-smoke.log'
+tree = subprocess.check_output(['xwininfo', '-root', '-tree'], text=True, timeout=10)
+if '"CP Pet ' in tree:
+    raise SystemExit('Close existing desktop pets before running the isolated native check')
 with log.open('w') as output:
-    preview = '--preview' in sys.argv
+    preview = args.preview
     app = subprocess.Popen([str(engine), '--display-driver', 'x11', '--', *([] if preview else ['--paused'])], cwd='/tmp', stdout=output, stderr=subprocess.STDOUT)
     try:
         for _ in range(300):

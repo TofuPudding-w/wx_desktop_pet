@@ -2,8 +2,8 @@
 # Pinned official Godot toolchain; downloads stay outside Git history.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
-if [[ "${1:-}" != "" && "${1:-}" != "--engine-only" ]]; then
-  echo 'Usage: tools/setup_godot.sh [--engine-only]' >&2
+if [[ "${1:-}" != "" && "${1:-}" != "--engine-only" && "${1:-}" != "--all-platforms" ]]; then
+  echo 'Usage: tools/setup_godot.sh [--engine-only|--all-platforms]' >&2
   exit 2
 fi
 mkdir -p .tools/downloads .tools/godot .tools/templates
@@ -25,5 +25,10 @@ if [[ "${1:-}" != "--engine-only" ]]; then
     unzip -p .tools/downloads/Godot_v4.6.1-stable_export_templates.tpz "templates/linux_${kind}.x86_64" > ".tools/templates/linux_${kind}.x86_64"
     chmod +x ".tools/templates/linux_${kind}.x86_64"
   done
+  if [[ "${1:-}" == "--all-platforms" ]]; then
+    for name in windows_debug_x86_64.exe windows_release_x86_64.exe macos.zip; do
+      unzip -p .tools/downloads/Godot_v4.6.1-stable_export_templates.tpz "templates/$name" > ".tools/templates/$name"
+    done
+  fi
 fi
 .tools/godot/Godot_v4.6.1-stable_linux.x86_64 --version

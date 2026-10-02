@@ -147,7 +147,7 @@ func refresh_art() -> void:
 	if artwork == null:
 		return
 	var seconds := 0.0 if paused or menu_open else state_time
-	var key := artwork.key_for(state, facing, seconds, interaction_frame, absf(foot.x - target_x) > 0.0)
+	var key := artwork.key_for(state, facing, seconds, interaction_frame, absf(foot.x - target_x) > 0.01)
 	if key == art_key:
 		return
 	art_key = key
