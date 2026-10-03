@@ -11,6 +11,7 @@ def render(root, target, version, build_id):
         'PLATFORM': {'windows':'Windows x64', 'linux':'Linux x64', 'macos':'macOS Universal · 实验版'}[target],
         'PLATFORM_NOTE': '本平台尚未经过实机测试。' if target == 'macos' else '请先关闭旧桌宠，再启动此包。',
         'VERSION':version, 'BUILD_ID':build_id,
+        'FEEDBACK_EMAIL':json.loads((root/'data/online.json').read_text()).get('feedback_email', ''),
         'EYE_COOLDOWN':str(data['natural_approach']['cooldown']),
         'HUG_COOLDOWN':str(data['hug']['cooldown']),
         'REST':str(data['hug']['rest_after']),

@@ -117,7 +117,7 @@ def build(target, engine, destination, build_id, source_digest, stage=1):
         'windows': 'Extract the WHOLE ZIP before launching CPPet.exe or run.cmd. Keep CPPet.pck beside CPPet.exe. Run create-shortcut.cmd for an optional desktop shortcut.\nUse test-eye-contact.cmd / test-hug.cmd to isolate each interaction. Close existing pets first.\nUse diagnose.cmd if needed; logs: %LOCALAPPDATA%\\WangXianPet\\Stage1\\pet.log\n',
         'macos': 'EXPERIMENTAL / UNVERIFIED ON macOS. Extract the ZIP and open the .app bundle. Finder > Make Alias can create a desktop shortcut.\nAd-hoc signed only, NOT Developer ID signed or notarized. Gatekeeper may prevent launch.\nDo not disable system-wide security. This build needs a Mac volunteer to validate launch and desktop behavior.\n',
     }
-    (folder / 'README.txt').write_text(f'WangXian Desktop Pet - Stage {stage} local test build\nOpen START_HERE.html for the illustrated offline guide.\nNOT A NEW PUBLIC RELEASE. Device validation pending; see TEST_CHECKLIST.md.\n\n' + instructions[target] + '\nRight-click a character: pause/resume, reset positions, Settings > pet size (100-200%) / automatic interactions, Interactions > eye contact / hug, Hide > right-click the screen-edge rabbit > Show pets, Help > offline user guide, exit.\nWWX left / LWJ right, within 320px; independent 30-second cooldown per interaction, plus a 5-second shared rest. Automatic and manual triggers follow the same rules. Cooldowns start on completion/cancellation and continue while paused or hidden.\nPet size, pause and automatic interactions are saved locally; large sizes are limited to fit the display.\nNo installer or update checker in this stage.\n')
+    (folder / 'README.txt').write_text(f'WangXian Desktop Pet - Stage {stage} local test build\nOpen START_HERE.html for the illustrated offline guide.\nNOT A NEW PUBLIC RELEASE. Device validation pending; see TEST_CHECKLIST.md.\n\n' + instructions[target] + '\nRight-click a character: pause/resume, reset positions, Settings > pet size (100-200%) / automatic interactions, Interactions > eye contact / hug, Hide > right-click the screen-edge rabbit > Show pets, Help > offline user guide, exit.\nWWX left / LWJ right, within 320px; independent 30-second cooldown per interaction, plus a 5-second shared rest. Automatic and manual triggers follow the same rules. Cooldowns start on completion/cancellation and continue while paused or hidden.\nPet size, pause and automatic interactions are saved locally; large sizes are limited to fit the display.\nManual update checking requires internet; no automatic installation.\n')
     (folder / 'START_HERE.html').write_text(render_user_guide(ROOT, target, project_version(), build_id), encoding='utf-8')
     shutil.copy2(ROOT / 'assets/characters/icon/hiding_icon.png', folder / 'hiding_icon.png')
     shutil.copy2(ROOT / 'assets/characters/icon/icon.png', folder / 'icon.png')
@@ -151,7 +151,7 @@ def build(target, engine, destination, build_id, source_digest, stage=1):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--stage', type=int, choices=[1, 2, 3], default=1)
+    parser.add_argument('--stage', type=int, choices=[1, 2, 3, 4], default=1)
     parser.add_argument('--platform', choices=['all', *TARGETS], default='all')
     parser.add_argument('--godot', type=Path, default=ROOT / '.tools/godot/Godot_v4.6.1-stable_linux.x86_64')
     args = parser.parse_args()

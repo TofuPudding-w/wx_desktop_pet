@@ -1,0 +1,9 @@
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+/tmp/cp-pet-preview-A.png
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+pointer child: 0x1800055 target: 0x1800055 position: (723, 816)
+/tmp/cp-pet-menu.png
+Exit menu closed both windows
+PASS: native update menu and check request, close/reopen menu, exit

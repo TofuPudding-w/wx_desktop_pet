@@ -4,7 +4,7 @@ extends RefCounted
 const SIZE := Vector2i(320, 384)
 const FOOT := Vector2(160, 376)
 const BODY := Rect2(40, 100, 240, 276)
-const MENU := Rect2(30, 8, 260, 204)
+const MENU := Rect2(30, 8, 260, 232)
 var scale_factor := 1.0
 var menu_rect := MENU
 var window: Window

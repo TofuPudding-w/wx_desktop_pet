@@ -54,8 +54,8 @@ if '--menu' in sys.argv:
  subprocess.run(['import','-window',hex(w),'/tmp/cp-pet-menu.png'],check=True)
  print('/tmp/cp-pet-menu.png')
  sys.exit(0)
-if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','--settings-menu','--size150-menu','--size200-menu','--size100-menu','--size-menu','--hide-menu','--restore-menu','--exit-hidden-menu','--help-menu','--guide-menu']):
- rows={'--exit-menu':190,'--reset-menu':50,'--pause-menu':22,'--settings-menu':78,'--size-menu':22,'--hide-menu':134,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':162,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
+if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','--settings-menu','--size150-menu','--size200-menu','--size100-menu','--size-menu','--hide-menu','--restore-menu','--exit-hidden-menu','--help-menu','--guide-menu','--updates-menu','--check-update-menu']):
+ rows={'--exit-menu':218,'--reset-menu':50,'--pause-menu':22,'--settings-menu':78,'--size-menu':22,'--hide-menu':134,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':162,'--updates-menu':190,'--check-update-menu':106,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
  row=next(value for flag,value in rows.items() if flag in sys.argv)
  for _ in range(5):
   a,b=pos(); move(a+px(112 if hidden else 160),b+px(row))

@@ -25,12 +25,23 @@ var hiding_icon: HiddenPetIcon
 var guide_opener: Callable = OS.shell_open
 var guide_locator: Callable = LocalGuide.find_path
 var guide_button: Button
+var online: Dictionary = {}
+var update_checker: UpdateChecker
+var update_status: Label
+var update_button: Button
+var update_panel := false
 
 func _ready() -> void:
 	initialize.call_deferred()
 
 func initialize() -> void:
 	Engine.max_fps = 30
+	var online_data: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/online.json"))
+	if online_data is Dictionary:
+		online = online_data
+	update_checker = UpdateChecker.new()
+	add_child(update_checker)
+	update_checker.changed.connect(refresh_update_menu)
 	var args := OS.get_cmdline_user_args()
 	debug_mode = "--debug-window" in args
 	paused = "--paused" in args
@@ -164,13 +175,14 @@ func toggle_menu(pet: Pet) -> void:
 		if same:
 			return
 	interaction.cancel()
-	var column := make_menu(pet, 7)
+	var column := make_menu(pet, 8)
 	pause_button = add_menu_button(column, "继续活动" if paused else "暂停活动", toggle_pause)
 	add_menu_button(column, "回到桌面中央", reset_positions)
 	add_menu_button(column, "设置", show_settings)
 	add_menu_button(column, "互动", show_interactions)
 	add_menu_button(column, "隐藏桌宠", hide_pets)
 	add_menu_button(column, "帮助", show_help)
+	add_menu_button(column, "检查更新（联网）", show_updates)
 	add_menu_button(column, "退出桌宠", func(): get_tree().quit())
 
 func add_menu_button(parent: Control, label: String, action: Callable) -> Button:
@@ -189,6 +201,7 @@ func add_menu_button(parent: Control, label: String, action: Callable) -> Button
 	return button
 
 func close_menu() -> void:
+	update_panel = false
 	interaction_buttons.clear()
 	if is_instance_valid(menu):
 		menu.queue_free()
@@ -350,15 +363,18 @@ func show_pets() -> void:
 
 func show_help() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 2)
+	var column := make_menu(pet, 5)
 	guide_button = add_menu_button(column, "使用指南（离线）", open_guide)
+	add_online_button(column, "在线指南（联网）", "guide_url")
+	add_online_button(column, "下载与更新网站（联网）", "downloads_url")
+	add_menu_button(column, "联系与反馈", show_feedback)
 	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
 
 func open_guide() -> void:
 	var path: String = guide_locator.call()
 	if path.is_empty():
 		if is_instance_valid(guide_button):
-			guide_button.text = "指南缺失，请完整解压"
+			guide_button.text = "指南缺失，请点下方在线指南" if UpdateChecker.https_url(online.get("guide_url", "")) else "指南缺失，请完整解压"
 		return
 	var result: int = guide_opener.call(path)
 	if result == OK:
@@ -366,3 +382,64 @@ func open_guide() -> void:
 	elif is_instance_valid(guide_button):
 		guide_button.text = "未能打开，请直接打开 HTML"
 		guide_button.tooltip_text = path
+
+func add_online_button(column: Control, title: String, key: String) -> void:
+	var button := add_menu_button(column, title, func(): open_online(key))
+	button.disabled = not UpdateChecker.https_url(online.get(key, ""))
+	if button.disabled:
+		button.text = title.trim_suffix("（联网）") + "（尚未配置）"
+
+func open_online(key: String) -> void:
+	var url: Variant = online.get(key, "")
+	if UpdateChecker.https_url(url):
+		if guide_opener.call(url) == OK:
+			close_menu()
+		else:
+			var column := make_menu(menu_pet, 3)
+			var label := add_menu_button(column, "无法打开浏览器，请手动访问", func(): pass)
+			label.tooltip_text = url
+			add_menu_button(column, "返回帮助", show_help)
+
+func show_updates() -> void:
+	var pet := menu_pet
+	var column := make_menu(pet, 7)
+	update_panel = true
+	update_status = Label.new()
+	update_status.custom_minimum_size = Vector2(260, 84)
+	update_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	update_status.add_theme_font_override("font", pets[0].font)
+	update_status.add_theme_font_size_override("font_size", 15)
+	update_status.add_theme_color_override("font_color", Color("253346"))
+	column.add_child(update_status)
+	update_button = add_menu_button(column, "检查更新（需要联网）", check_updates)
+	add_online_button(column, "前往下载页面", "downloads_url")
+	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
+	refresh_update_menu()
+
+func check_updates() -> void:
+	var endpoints: Variant = online.get("update_endpoints", [])
+	update_checker.start(endpoints if endpoints is Array else [], str(ProjectSettings.get_setting("application/config/version", "")))
+
+func refresh_update_menu() -> void:
+	if update_panel and is_instance_valid(update_status):
+		update_status.text = "当前版本：%s\n%s" % [ProjectSettings.get_setting("application/config/version", ""), update_checker.message]
+		update_button.disabled = update_checker.busy
+
+func show_feedback() -> void:
+	var pet := menu_pet
+	var column := make_menu(pet, 5)
+	var address := str(online.get("feedback_email", ""))
+	var label := add_menu_button(column, address if not address.is_empty() else "邮箱尚未配置", func(): pass)
+	label.tooltip_text = "请附版本、系统、复现步骤；截图请遮挡个人信息。"
+	var button := add_menu_button(column, "使用邮件应用写反馈", func():
+		var target := "mailto:" + address + "?subject=" + "忘羡桌宠反馈".uri_encode()
+		if guide_opener.call(target) == OK:
+			close_menu()
+		else:
+			label.text = "无法打开邮件应用，请手动发邮件"
+			label.tooltip_text = address)
+	var regex := RegEx.new()
+	regex.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+	button.disabled = regex.search(address) == null
+	add_menu_button(column, "复制邮箱", func(): DisplayServer.clipboard_set(address))
+	add_menu_button(column, "返回", show_help)
