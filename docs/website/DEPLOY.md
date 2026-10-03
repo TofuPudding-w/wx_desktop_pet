@@ -35,3 +35,7 @@
 ## 本次验证
 
 37 项 Python 检查通过，包括站内链接／锚点、版本信息一致性、危险下载链接拒绝、原始素材逐字节一致。Firefox 已检查桌面 1440px 与手机 390px 布局；已修正手机角色预览裁切。网站图片与 Godot 导出分离，避免增加桌宠安装包体积。未提交、推送或部署。
+
+## 公开预览版下载（v0.3.0）
+
+GitHub v0.3.0 已于 2026-10-03 公开为 pre-release。release.json 的 version/date/downloads 用于下载页面；prerelease=true 显示「公开预览版」。stable_version=null 表示尚无稳定版，网站 version.json 不会将预览版推送到稳定更新通道。以后发布新预览版时应保留已有真实 stable_version；发布正式版则设 prerelease=false。国内备用链接仍为空，不能将 GitHub 链接当成国内镜像。

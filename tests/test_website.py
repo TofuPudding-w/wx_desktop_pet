@@ -7,7 +7,7 @@ import unittest
 from urllib.parse import urlsplit,unquote
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
-from build_website import validate
+from build_website import validate, version_manifest
 class Page(HTMLParser):
     def __init__(self):
         super().__init__();self.refs=[];self.ids=set()
@@ -36,10 +36,18 @@ class WebsiteTests(unittest.TestCase):
         release=json.loads((ROOT/'docs/website/release.json').read_text())
         endpoint=json.loads((ROOT/'website/version.json').read_text())
         validate(release)
-        self.assertEqual(release['version'],endpoint['version'])
+        self.assertEqual(version_manifest(release),endpoint)
         if release['version'] is None:
             self.assertEqual(endpoint['status'],'unreleased')
             self.assertNotIn('/releases/download/',(ROOT/'website/index.html').read_text())
+    def test_preview_does_not_announce_stable_update(self):
+        preview={'version':'0.3.0','prerelease':True,'stable_version':None}
+        self.assertEqual(version_manifest(preview),{'version':None,'status':'unreleased'})
+        preview['stable_version']='0.2.0'
+        self.assertEqual(version_manifest(preview)['version'],'0.2.0')
+        preview['prerelease']=False
+        self.assertEqual(version_manifest(preview)['version'],'0.3.0')
+
     def test_release_safety(self):
         release=json.loads((ROOT/'docs/website/release.json').read_text())
         release.update(version='0.3.0',date='2026-10-03')

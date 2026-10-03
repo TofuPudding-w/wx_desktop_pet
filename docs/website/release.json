@@ -1,19 +1,26 @@
 {
-  "version": null,
-  "date": null,
-  "notes": [],
+  "version": "0.3.0",
+  "date": "2026-10-03",
+  "notes": [
+    "首个公开预览版：独立行走、拖拽、对视与拥抱。",
+    "角色大小与自动互动设置、可拖动的隐藏小兔子。",
+    "中英文菜单、离线指南、官网及反馈入口；支持手动检查稳定版更新。",
+    "Windows / Linux 可下载，macOS 为未经实机验证的实验版本。"
+  ],
   "downloads": {
     "windows": {
-      "github": "",
+      "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-Windows-x64.zip",
       "mainland": ""
     },
     "linux": {
-      "github": "",
+      "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-Linux-x64.zip",
       "mainland": ""
     },
     "macos": {
-      "github": "",
+      "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-macOS-Universal-EXPERIMENTAL.zip",
       "mainland": ""
     }
-  }
+  },
+  "prerelease": true,
+  "stable_version": null
 }
