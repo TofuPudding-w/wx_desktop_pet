@@ -60,7 +60,7 @@ with log.open('w') as output:
                         if 'Map State: IsViewable' in info:
                             mapped.append(name)
                     return sorted(mapped)
-                for arguments in [('A', '--menu'), ('A', '--reset-menu'), ('A', '--menu'), ('A', '--hide-menu')]:
+                for arguments in [('A', '--menu'), ('A', '--settings-menu'), ('A', '--reset-menu'), ('A', '--menu'), ('A', '--hide-menu')]:
                     subprocess.run(['python3', str(probe), *arguments], check=True)
                 assert mapped_pets() == ['CP Pet Hidden'], 'Only restore icon should be visible'
                 for arguments in [('Hidden', '--alpha'), ('Hidden', '--icon-input'), ('Hidden',), ('Hidden', '--menu'), ('Hidden', '--restore-menu')]:

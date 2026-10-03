@@ -54,6 +54,14 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	app.toggle_menu(app.pets[0])
+	var root_column = app.menu_column
+	check(root_column.get_child_count() == 6, "main menu contains six everyday actions")
+	root_column.get_child(3).pressed.emit()
+	var settings_column = app.menu_column
+	check("检查更新" in settings_column.get_child(3).text, "update check is in settings")
+	settings_column.get_child(3).pressed.emit()
+	app.menu_column.get_child(3).pressed.emit()
+	check("角色大小" in app.menu_column.get_child(0).text, "update back returns to settings")
 	app.show_updates()
 	check(app.update_panel and not app.update_button.disabled, "update menu available")
 	app.update_checker.current_version = "0.2.2"
@@ -68,6 +76,7 @@ func run() -> void:
 	check("最新正式版本" in app.update_status.text, "result retained across closed menu")
 	app.online.guide_url = "https://example.com/guide"
 	app.show_help()
+	app.show_guides()
 	app.guide_locator = func(): return ""
 	app.open_guide()
 	check("在线指南" in app.guide_button.text, "missing guide directs to configured online fallback")
@@ -80,7 +89,7 @@ func run() -> void:
 	check(opened.size() == 1, "online links cannot open local files")
 	app.toggle_menu(app.pets[0])
 	app.show_feedback()
-	var column = app.menu.get_child(0)
+	var column = app.menu_column
 	check(column.get_child(0).text == "3185470689@qq.com", "feedback email displayed")
 	column.get_child(1).pressed.emit()
 	check(opened[-1].begins_with("mailto:3185470689@qq.com?subject="), "feedback opens mail draft, does not send")

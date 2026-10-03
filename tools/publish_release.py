@@ -8,7 +8,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from release_metadata import release_metadata, ROOT
+from release_metadata import release_metadata, release_archives, ROOT
 
 
 class GitHub:
@@ -100,7 +100,9 @@ def main():
     parser.add_argument("--assets", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     metadata = release_metadata(tag=args.tag)
-    assets = verified_assets(args.assets, metadata["archive"])
+    assets = []
+    for archive in release_archives(metadata["version"]):
+        assets.extend(verified_assets(args.assets, archive))
     notes = (ROOT / "releases" / (args.tag + ".md")).read_text()
     api = GitHub(os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GH_TOKEN", ""))
     url = create_draft(api, args.tag, args.commit, notes, assets)
@@ -108,7 +110,7 @@ def main():
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with open(summary, "a") as output:
-            output.write(f"Draft prerelease: [{args.tag}]({url})\n\nLinux ZIP and SHA-256 uploaded. Not publicly published.\n")
+            output.write(f"Draft prerelease: [{args.tag}]({url})\n\nLinux, Windows and experimental macOS ZIPs and SHA-256 files uploaded. Not publicly published.\n")
 
 
 if __name__ == "__main__":

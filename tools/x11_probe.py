@@ -18,6 +18,8 @@ width=int(re.search(r'Width: (\d+)',geometry)[1]); height=int(re.search(r'Height
 hidden = sys.argv[1] == "Hidden"
 factor=width/(232 if hidden else 320)
 body_x, body_y = (192,112) if hidden else (160,240)
+if not hidden and "--menu" in sys.argv:
+ body_y = 320  # The taller menu covers y=240; reopen via the visible lower body.
 def px(value): return round(value*factor)
 if '--alpha' in sys.argv:
  x.XGetImage.argtypes=[P,U,I,I,c.c_uint,c.c_uint,U,I]; x.XGetImage.restype=P
@@ -55,8 +57,13 @@ if '--menu' in sys.argv:
  print('/tmp/cp-pet-menu.png')
  sys.exit(0)
 if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','--settings-menu','--size150-menu','--size200-menu','--size100-menu','--size-menu','--hide-menu','--restore-menu','--exit-hidden-menu','--help-menu','--guide-menu','--updates-menu','--check-update-menu']):
- rows={'--exit-menu':218,'--reset-menu':50,'--pause-menu':22,'--settings-menu':78,'--size-menu':22,'--hide-menu':134,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':162,'--updates-menu':190,'--check-update-menu':106,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
+ rows={'--exit-menu':162,'--reset-menu':78,'--pause-menu':22,'--settings-menu':106,'--size-menu':22,'--hide-menu':78,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':134,'--updates-menu':106,'--check-update-menu':106,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
  row=next(value for flag,value in rows.items() if flag in sys.argv)
+ if not hidden:
+  if '--check-update-menu' in sys.argv:
+   row=168
+  else:
+   row=80 + round((row-22)/28)*34
  for _ in range(5):
   a,b=pos(); move(a+px(112 if hidden else 160),b+px(row))
   if child()==w: break
@@ -64,7 +71,10 @@ if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','
  xt.XTestFakeButtonEvent(d,1,1,0); x.XFlush(d); time.sleep(.1)
  xt.XTestFakeButtonEvent(d,1,0,0); x.XFlush(d); time.sleep(.5)
  if '--exit-menu' in sys.argv or '--exit-hidden-menu' in sys.argv:
-  tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
+  for _ in range(30):
+   tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
+   if '"CP Pet ' not in tree: break
+   time.sleep(.1)
   assert '"CP Pet ' not in tree, 'Exit must close both windows'
   print('Exit menu closed both windows')
  sys.exit(0)

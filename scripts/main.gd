@@ -7,6 +7,7 @@ var hug_overlay: HugOverlay
 var debug_mode := false
 var paused := false
 var menu: PanelContainer
+var menu_column: VBoxContainer
 var menu_pet: Pet
 var pause_button: Button
 var area := Rect2()
@@ -175,26 +176,50 @@ func toggle_menu(pet: Pet) -> void:
 		if same:
 			return
 	interaction.cancel()
-	var column := make_menu(pet, 8)
+	var column := make_menu(pet, 6)
 	pause_button = add_menu_button(column, "继续活动" if paused else "暂停活动", toggle_pause)
-	add_menu_button(column, "回到桌面中央", reset_positions)
-	add_menu_button(column, "设置", show_settings)
-	add_menu_button(column, "互动", show_interactions)
+	add_menu_button(column, "互动  ›", show_interactions)
 	add_menu_button(column, "隐藏桌宠", hide_pets)
-	add_menu_button(column, "帮助", show_help)
-	add_menu_button(column, "检查更新（联网）", show_updates)
-	add_menu_button(column, "退出桌宠", func(): get_tree().quit())
+	add_menu_button(column, "设置  ›", show_settings)
+	add_menu_button(column, "帮助  ›", show_help)
+	var exit_button := add_menu_button(column, "退出桌宠", func(): get_tree().quit())
+	exit_button.add_theme_color_override("font_color", Color("985847"))
 
 func add_menu_button(parent: Control, label: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = label
-	button.custom_minimum_size = Vector2(260, 28)
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.custom_minimum_size = Vector2(256, 32)
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	button.tooltip_text = label
 	button.add_theme_font_override("font", pets[0].font)
 	button.add_theme_font_size_override("font_size", 15)
 	button.add_theme_color_override("font_color", Color("253346"))
+	button.add_theme_color_override("font_hover_color", Color("30473f"))
+	button.add_theme_color_override("font_pressed_color", Color("30473f"))
 	button.add_theme_color_override("font_disabled_color", Color("777777"))
-	button.add_theme_stylebox_override("normal", Pet.rounded(Color("fffaf0"), 8))
-	button.add_theme_stylebox_override("hover", Pet.rounded(Color("e4eef2"), 8))
+	var normal := Pet.rounded(Color(0, 0, 0, 0), 6)
+	normal.content_margin_left = 12
+	normal.content_margin_right = 28
+	button.add_theme_stylebox_override("normal", normal)
+	var hover := normal.duplicate()
+	hover.bg_color = Color("e6eee3")
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", hover)
+	button.add_theme_stylebox_override("disabled", normal)
+	if "›" in label:
+		button.text = label.replace("  ›", "").replace(" ›", "")
+		var arrow := Label.new()
+		arrow.text = "›"
+		arrow.add_theme_color_override("font_color", Color("7e8e80"))
+		arrow.position = Vector2(234, 3)
+		arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(arrow)
+	if "返回" in label or "退出" in label:
+		normal = normal.duplicate()
+		normal.bg_color = Color("f0f2eb")
+		button.add_theme_stylebox_override("normal", normal)
+		button.add_theme_font_size_override("font_size", 13)
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(action)
 	parent.add_child(button)
@@ -250,7 +275,7 @@ func write_report() -> void:
 
 func show_size_settings() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 6)
+	var column := make_menu(pet, 6, "角色大小", "Character Size")
 	for value in PetSettings.SIZES:
 		var label := ("✓ " if is_equal_approx(value, settings.requested_size) else "") + "%d%%" % roundi(value * 100)
 		add_menu_button(column, label, func(): apply_size(value))
@@ -278,29 +303,62 @@ func apply_size(value: float, persist := true) -> void:
 	if persist:
 		save_settings()
 
-func make_menu(pet: Pet, rows: int) -> VBoxContainer:
+func make_menu(pet: Pet, rows: int, title := "忘羡桌宠", subtitle := "WangXian Desktop Pet") -> VBoxContainer:
 	close_menu()
 	menu_pet = pet
 	pet.stop_drag()
 	pet.menu_open = true
-	pet.controller.menu_rect = Rect2(30, 8, 260, rows * 28 + 8)
+	pet.controller.menu_rect = Rect2(22, 8, 276, rows * 34 + 64)
 	menu = PanelContainer.new()
 	menu.position = pet.controller.menu_rect.position
 	menu.size = pet.controller.menu_rect.size
-	menu.add_theme_stylebox_override("panel", Pet.rounded(Color("fffaf0"), 12))
+	var panel_style := Pet.rounded(Color("faf9f4"), 14)
+	panel_style.set_border_width_all(1)
+	panel_style.border_color = Color("dce2d8")
+	panel_style.content_margin_left = 10
+	panel_style.content_margin_right = 10
+	panel_style.content_margin_top = 10
+	panel_style.content_margin_bottom = 10
+	menu.add_theme_stylebox_override("panel", panel_style)
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation", 8)
+	menu.add_child(shell)
+	var header := HBoxContainer.new()
+	header.custom_minimum_size.y = 38
+	header.add_theme_constant_override("separation", 10)
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shell.add_child(header)
+	header.draw.connect(func(): header.draw_line(Vector2(0, 42), Vector2(256, 42), Color("e2e7dd"), 1))
+	var headings := VBoxContainer.new()
+	headings.add_theme_constant_override("separation", 0)
+	var header_inset := MarginContainer.new()
+	header_inset.add_theme_constant_override("margin_left", 12)
+	header_inset.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(header_inset)
+	header_inset.add_child(headings)
+	for item in [[title, 15, "30473f"], [subtitle, 11, "7d897f"]]:
+		var heading := Label.new()
+		heading.text = item[0]
+		heading.add_theme_font_override("font", pets[0].font)
+		heading.add_theme_font_size_override("font_size", item[1])
+		heading.add_theme_color_override("font_color", Color(item[2]))
+		headings.add_child(heading)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 0)
-	menu.add_child(column)
+	column.add_theme_constant_override("separation", 2)
+	shell.add_child(column)
+	menu_column = column
 	pet.add_child(menu)
 	pet.controller.update_input(true)
 	return column
 
 func show_settings() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 3)
-	add_menu_button(column, "角色大小 · %d%%" % roundi(settings.requested_size * 100), show_size_settings)
+	var column := make_menu(pet, 5, "设置", "Settings")
+	add_menu_button(column, "角色大小 · %d%%  ›" % roundi(settings.requested_size * 100), show_size_settings)
 	add_menu_button(column, "自动互动：" + ("开" if settings.automatic_interactions else "关"), toggle_automatic)
-	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
+	add_menu_button(column, "重置位置", reset_positions)
+	add_menu_button(column, "检查更新  ›", show_updates)
+	add_menu_button(column, "‹  返回主菜单", func(): close_menu(); toggle_menu(pet))
 
 func toggle_automatic() -> void:
 	settings.automatic_interactions = not settings.automatic_interactions
@@ -314,7 +372,7 @@ func save_settings() -> void:
 
 func show_interactions() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 3)
+	var column := make_menu(pet, 3, "双人互动", "Pair Interactions")
 	for id in ["natural_approach", "hug"]:
 		interaction_buttons[id] = add_menu_button(column, "", func(): select_interaction(id))
 	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
@@ -363,12 +421,17 @@ func show_pets() -> void:
 
 func show_help() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 5)
-	guide_button = add_menu_button(column, "使用指南（离线）", open_guide)
-	add_online_button(column, "在线指南（联网）", "guide_url")
-	add_online_button(column, "下载与更新网站（联网）", "downloads_url")
-	add_menu_button(column, "联系与反馈", show_feedback)
-	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
+	var column := make_menu(pet, 4, "帮助", "Help")
+	add_menu_button(column, "使用指南  ›", show_guides)
+	add_online_button(column, "访问网站 ↗", "downloads_url")
+	add_menu_button(column, "联系与反馈  ›", show_feedback)
+	add_menu_button(column, "‹  返回主菜单", func(): close_menu(); toggle_menu(pet))
+
+func show_guides() -> void:
+	var column := make_menu(menu_pet, 3, "使用指南", "User Guide")
+	guide_button = add_menu_button(column, "离线指南", open_guide)
+	add_online_button(column, "在线指南 ↗", "guide_url")
+	add_menu_button(column, "‹  返回帮助", show_help)
 
 func open_guide() -> void:
 	var path: String = guide_locator.call()
@@ -402,10 +465,10 @@ func open_online(key: String) -> void:
 
 func show_updates() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 7)
+	var column := make_menu(pet, 6, "检查更新", "Check for Updates")
 	update_panel = true
 	update_status = Label.new()
-	update_status.custom_minimum_size = Vector2(260, 84)
+	update_status.custom_minimum_size = Vector2(256, 84)
 	update_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	update_status.add_theme_font_override("font", pets[0].font)
 	update_status.add_theme_font_size_override("font_size", 15)
@@ -413,7 +476,7 @@ func show_updates() -> void:
 	column.add_child(update_status)
 	update_button = add_menu_button(column, "检查更新（需要联网）", check_updates)
 	add_online_button(column, "前往下载页面", "downloads_url")
-	add_menu_button(column, "返回", func(): close_menu(); toggle_menu(pet))
+	add_menu_button(column, "‹  返回设置", show_settings)
 	refresh_update_menu()
 
 func check_updates() -> void:
@@ -427,7 +490,7 @@ func refresh_update_menu() -> void:
 
 func show_feedback() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 5)
+	var column := make_menu(pet, 4, "联系与反馈", "Contact & Feedback")
 	var address := str(online.get("feedback_email", ""))
 	var label := add_menu_button(column, address if not address.is_empty() else "邮箱尚未配置", func(): pass)
 	label.tooltip_text = "请附版本、系统、复现步骤；截图请遮挡个人信息。"

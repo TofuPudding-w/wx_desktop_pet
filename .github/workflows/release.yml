@@ -45,10 +45,10 @@ jobs:
           test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$commit"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
       - name: Test release tooling
-        run: python3 -m unittest discover -s tests -p 'test_release*.py' -v
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Install verified Godot 4.6.1 toolchain
-        run: ./tools/setup_godot.sh
-      - name: Import, test and export Linux
+        run: ./tools/setup_godot.sh --all-platforms
+      - name: Import, test and export all platforms
         env:
           GODOT_BIN: ${{ github.workspace }}/.tools/godot/Godot_v4.6.1-stable_linux.x86_64
         run: |
@@ -59,13 +59,15 @@ jobs:
           "$GODOT_BIN" --headless --path . --script tests/test_eye_contact.gd
           "$GODOT_BIN" --headless --path . --script tests/test_drag_preview.gd
           "$GODOT_BIN" --headless --path . --script tests/test_hug.gd
-          ./tools/export_linux.sh
+          "$GODOT_BIN" --headless --path . --script tests/test_controls.gd
+          "$GODOT_BIN" --headless --path . --script tests/test_updates.gd
+          python3 tools/build_stage1.py --stage 4 --release --platform all
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: release-linux
+          name: release-packages
           path: |
-            dist/${{ steps.meta.outputs.archive }}
-            dist/${{ steps.meta.outputs.archive }}.sha256
+            dist/releases/${{ steps.meta.outputs.tag }}/*.zip
+            dist/releases/${{ steps.meta.outputs.tag }}/*.zip.sha256
           if-no-files-found: error
           retention-days: 7
 
@@ -82,7 +84,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: release-linux
+          name: release-packages
           path: dist
       - name: Create draft prerelease and upload verified assets
         env:

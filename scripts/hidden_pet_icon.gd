@@ -134,7 +134,14 @@ func show_menu() -> void:
 	menu = PanelContainer.new()
 	menu.position = menu_rect.position
 	menu.size = menu_rect.size
-	menu.add_theme_stylebox_override("panel", Pet.rounded(Color("fffaf0"), 10))
+	var panel := Pet.rounded(Color("faf9f4"), 10)
+	panel.set_border_width_all(1)
+	panel.border_color = Color("dce2d8")
+	panel.content_margin_left = 4
+	panel.content_margin_right = 4
+	panel.content_margin_top = 4
+	panel.content_margin_bottom = 4
+	menu.add_theme_stylebox_override("panel", panel)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 0)
 	menu.add_child(column)
@@ -146,13 +153,24 @@ func show_menu() -> void:
 func add_button(column: VBoxContainer, label: String, action: Callable) -> void:
 	var button := Button.new()
 	button.text = label
-	button.custom_minimum_size = Vector2(224, 28)
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.custom_minimum_size = Vector2(0, 28)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_NONE
 	button.add_theme_font_override("font", preload("res://assets/fonts/DroidSansFallbackFull.ttf"))
 	button.add_theme_font_size_override("font_size", 15)
 	button.add_theme_color_override("font_color", Color("253346"))
-	button.add_theme_stylebox_override("normal", Pet.rounded(Color("fffaf0"), 8))
-	button.add_theme_stylebox_override("hover", Pet.rounded(Color("e4eef2"), 8))
+	button.add_theme_color_override("font_hover_color", Color("30473f"))
+	button.add_theme_color_override("font_pressed_color", Color("30473f"))
+	var normal := Pet.rounded(Color(0, 0, 0, 0), 6)
+	normal.content_margin_left = 14
+	button.add_theme_stylebox_override("normal", normal)
+	var hover := normal.duplicate()
+	hover.bg_color = Color("e6eee3")
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", hover)
+	if "退出" in label:
+		button.add_theme_color_override("font_color", Color("985847"))
 	button.pressed.connect(action)
 	column.add_child(button)
 

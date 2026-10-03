@@ -9,7 +9,7 @@ import urllib.parse
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from release_metadata import project_version, release_metadata
+from release_metadata import project_version, release_metadata, release_archives
 from package_linux import package_linux, RELEASE_FILES
 from publish_release import GitHub, verified_assets, create_draft
 
@@ -70,6 +70,23 @@ class ReleaseTests(unittest.TestCase):
     def test_version_from_application_section(self):
         self.assertEqual(project_version(self.root), "0.1.0")
         self.assertEqual(release_metadata(self.root, "v0.1.0")["archive"], "CPPet-v0.1.0-Linux-x64.zip")
+
+    def test_all_platform_assets_are_verified_before_draft(self):
+        names = release_archives('0.1.0')
+        self.assertEqual(len(names), 3)
+        self.assertTrue(any('Windows-x64' in n for n in names))
+        self.assertTrue(any('macOS-Universal-EXPERIMENTAL' in n for n in names))
+        assets = []
+        for name in names:
+            archive = self.root / name
+            archive.write_bytes(b'test package')
+            digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+            (self.root / (name + '.sha256')).write_text(digest + '  ' + name + '\n')
+            assets.extend(verified_assets(self.root, name))
+        api = FakeGitHub()
+        create_draft(api, 'v0.1.0', COMMIT, 'notes', assets)
+        self.assertEqual(len(api.assets), 6)
+        self.assertTrue(api.release['draft'])
 
     def test_tag_mismatch_rejected(self):
         for tag in ("v0.2.0", "main", "v0.1.0;exit", "../v0.1.0"):

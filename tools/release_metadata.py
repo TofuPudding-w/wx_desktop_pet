@@ -31,6 +31,13 @@ def release_metadata(root=ROOT, tag=None):
             "archive": f"CPPet-v{version}-Linux-x64.zip"}
 
 
+def release_archives(version):
+    if not re.fullmatch(VERSION_PATTERN, version):
+        raise ValueError("Invalid release version")
+    return [f"CPPet-v{version}-{platform}.zip" for platform in
+            ("Linux-x64", "Windows-x64", "macOS-Universal-EXPERIMENTAL")]
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--tag")

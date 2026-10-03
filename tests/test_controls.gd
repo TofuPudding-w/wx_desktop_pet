@@ -84,6 +84,7 @@ func run() -> void:
 	var icon: HiddenPetIcon = app.hiding_icon
 	var screen := Rect2(-800, 40, 800, 600)
 	icon.reposition(screen)
+	icon.show()
 	for corner in [screen.position, Vector2(screen.end.x, screen.position.y), screen.end, Vector2(screen.position.x, screen.end.y), screen.get_center()]:
 		icon.show_menu()
 		var offset := Vector2(20, 24) * icon.ui_scale
@@ -94,6 +95,11 @@ func run() -> void:
 		icon.stop_drag()
 		icon.show_menu()
 		check(Rect2(Vector2.ZERO, Vector2(232, 152)).encloses(icon.menu_rect), "restore menu remains reachable at each edge")
+		await process_frame
+		await process_frame
+		var rendered_menu := Rect2(icon.menu.position, icon.menu.size)
+		check(icon.menu_rect.encloses(rendered_menu), "rendered menu fits declared clickable area after layout")
+		check(Rect2(Vector2.ZERO, Vector2(232, 152)).encloses(rendered_menu), "rendered menu border is not clipped by window at screen edges")
 		check(icon.icon_hit(icon.icon_rect.get_center()), "hit testing follows relocated icon")
 	var remembered := icon.icon_position
 	icon.dismiss()
@@ -151,6 +157,7 @@ func run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(app.settings_path))
 	app.toggle_menu(app.pets[0])
 	app.show_help()
+	app.show_guides()
 	var opened: Array[String] = []
 	app.guide_locator = func(): return "/tmp/忘羡 pet/START_HERE.html"
 	app.guide_opener = func(path): opened.append(path); return OK
@@ -158,6 +165,8 @@ func run() -> void:
 	check(opened == ["/tmp/忘羡 pet/START_HERE.html"] and app.menu == null, "Help dispatches exact local path and closes menu")
 	app.toggle_menu(app.pets[0])
 	app.show_help()
+	app.show_guides()
+	app.online.guide_url = ""
 	app.guide_locator = func(): return ""
 	app.guide_button.pressed.emit()
 	check(opened.size() == 1 and "完整解压" in app.guide_button.text, "missing guide gives visible recovery instruction without launching")

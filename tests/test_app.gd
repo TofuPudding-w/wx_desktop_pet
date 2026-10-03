@@ -95,7 +95,7 @@ func run() -> void:
 	check(is_equal_approx(app.pets[0].approach_walk_stop, 60), "early walk cutoff scales")
 	app.toggle_menu(app.pets[0])
 	app.show_size_settings()
-	check(app.menu.get_child(0).get_child_count() == 6, "settings contains five sizes and back")
+	check(app.menu_column.get_child_count() == 6, "settings contains five sizes and back")
 	app.apply_size(1.0, false)
 	check(app.menu == null and app.interaction.phase == InteractionManager.Phase.FREE, "size change cancels safely and closes menu")
 	var prefs := PetSettings.new()
