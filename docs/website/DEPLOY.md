@@ -39,3 +39,7 @@
 ## 公开预览版下载（v0.3.0）
 
 GitHub v0.3.0 已于 2026-10-03 公开为 pre-release。release.json 的 version/date/downloads 用于下载页面；prerelease=true 显示「公开预览版」。stable_version=null 表示尚无稳定版，网站 version.json 不会将预览版推送到稳定更新通道。以后发布新预览版时应保留已有真实 stable_version；发布正式版则设 prerelease=false。国内备用链接仍为空，不能将 GitHub 链接当成国内镜像。
+
+## 百度网盘备用下载
+
+三个平台按钮共用作者提供的分享文件夹；release.json 各平台 mainland 为分享链接，mainland_label 为「百度网盘下载」，mainland_code 为「wx99」。网页展示提取码，提示用户自行选择对应系统 ZIP。分享内容由作者维护，未通过自动检查核验网盘内文件与 Release 的校验和一致。

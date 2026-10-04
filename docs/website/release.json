@@ -10,15 +10,21 @@
   "downloads": {
     "windows": {
       "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-Windows-x64.zip",
-      "mainland": ""
+      "mainland": "https://pan.baidu.com/s/14T8eeQBAOt8i5yLyN1kIDw?pwd=wx99",
+      "mainland_label": "百度网盘下载",
+      "mainland_code": "wx99"
     },
     "linux": {
       "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-Linux-x64.zip",
-      "mainland": ""
+      "mainland": "https://pan.baidu.com/s/14T8eeQBAOt8i5yLyN1kIDw?pwd=wx99",
+      "mainland_label": "百度网盘下载",
+      "mainland_code": "wx99"
     },
     "macos": {
       "github": "https://github.com/TofuPudding-w/wx_desktop_pet/releases/download/v0.3.0/CPPet-v0.3.0-macOS-Universal-EXPERIMENTAL.zip",
-      "mainland": ""
+      "mainland": "https://pan.baidu.com/s/14T8eeQBAOt8i5yLyN1kIDw?pwd=wx99",
+      "mainland_label": "百度网盘下载",
+      "mainland_code": "wx99"
     }
   },
   "prerelease": true,

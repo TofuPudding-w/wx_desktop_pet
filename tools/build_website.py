@@ -54,7 +54,12 @@ def build():
         buttons = []
         for source, label in [('github','GitHub 下载'),('mainland','国内备用下载')]:
             url = release['downloads'][key][source]
-            buttons.append(f'<a class="button primary" href="{escape(url,quote=True)}">{label} ↗</a>' if url else f'<span class="button unavailable">{label} · 准备中</span>')
+            if source == 'mainland' and url:
+                label = release['downloads'][key].get('mainland_label', label)
+            buttons.append(f'<a class="button primary" href="{escape(url,quote=True)}">{escape(label)} ↗</a>' if url else f'<span class="button unavailable">{escape(label)} · 准备中</span>')
+        code = release['downloads'][key].get('mainland_code', '')
+        if release['downloads'][key]['mainland'] and code:
+            buttons.append(f'<div class="mirror-details">提取码：<strong>{escape(code)}</strong><br>同一分享文件夹，请选择 {escape(title)} 的 ZIP。</div>')
         cards.append(f'<article class="platform"><h3 class="os">{title}</h3><span class="tag">{tag}</span><p>{description}</p>{"".join(buttons)}</article>')
     version = release['version']
     channel = '公开预览版' if release.get('prerelease', False) else '最新正式版'
