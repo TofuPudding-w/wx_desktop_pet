@@ -12,11 +12,15 @@ ext.XShapeGetRectangles.argtypes=[P,U,I,c.POINTER(I),c.POINTER(I)]; ext.XShapeGe
 d=x.XOpenDisplay(None); assert d, 'No X11 display'; root=x.XDefaultRootWindow(d)
 tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
 match=re.search(r'(0x[0-9a-f]+) "CP Pet '+re.escape(sys.argv[1] if len(sys.argv)>1 else 'M0'),tree); assert match, tree
+menu_action = any(arg.endswith('-menu') for arg in sys.argv) and not any(arg in sys.argv for arg in ['--restore-menu', '--exit-hidden-menu'])
+if menu_action:
+ match=re.search(r'(0x[0-9a-f]+) \"CP Pet Menu',tree)
+ assert match, 'No menu window is open; no click sent'
 w=int(match[1],16)
 geometry=subprocess.check_output(['xwininfo','-id',hex(w)],text=True)
 width=int(re.search(r'Width: (\d+)',geometry)[1]); height=int(re.search(r'Height: (\d+)',geometry)[1])
 hidden = sys.argv[1] == "Hidden"
-factor=width/(232 if hidden else 320)
+factor=width/(276 if menu_action else (232 if hidden else 320))
 body_x, body_y = (192,112) if hidden else (160,240)
 if not hidden and "--menu" in sys.argv:
  body_y = 320  # The taller menu covers y=240; reopen via the visible lower body.
@@ -53,11 +57,14 @@ def body_target():
 if '--menu' in sys.argv:
  a,b=body_target(); print('pointer child:',hex(child()),'target:',hex(w),'position:',pos())
  xt.XTestFakeButtonEvent(d,3,1,0); xt.XTestFakeButtonEvent(d,3,0,0); x.XFlush(d); time.sleep(.3)
- subprocess.run(['import','-window',hex(w),'/tmp/cp-pet-menu.png'],check=True)
+ tree=subprocess.check_output(['xwininfo','-root','-tree'],text=True)
+ menu_match=re.search(r'(0x[0-9a-f]+) \"CP Pet Menu',tree)
+ assert menu_match, 'Menu did not open'
+ subprocess.run(['import','-window',menu_match[1],'/tmp/cp-pet-menu.png'],check=True)
  print('/tmp/cp-pet-menu.png')
  sys.exit(0)
 if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','--settings-menu','--size150-menu','--size200-menu','--size100-menu','--size-menu','--hide-menu','--restore-menu','--exit-hidden-menu','--help-menu','--guide-menu','--updates-menu','--check-update-menu']):
- rows={'--exit-menu':162,'--reset-menu':78,'--pause-menu':22,'--settings-menu':106,'--size-menu':22,'--hide-menu':78,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':134,'--updates-menu':106,'--check-update-menu':106,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
+ rows={'--exit-menu':190,'--reset-menu':78,'--pause-menu':22,'--settings-menu':106,'--size-menu':22,'--hide-menu':78,'--restore-menu':22,'--exit-hidden-menu':50,'--help-menu':162,'--updates-menu':106,'--check-update-menu':106,'--guide-menu':22,'--size150-menu':78,'--size200-menu':134,'--size100-menu':22}
  row=next(value for flag,value in rows.items() if flag in sys.argv)
  if not hidden:
   if '--check-update-menu' in sys.argv:
@@ -65,7 +72,7 @@ if any(arg in sys.argv for arg in ['--exit-menu','--reset-menu','--pause-menu','
   else:
    row=80 + round((row-22)/28)*34
  for _ in range(5):
-  a,b=pos(); move(a+px(112 if hidden else 160),b+px(row))
+  a,b=pos(); move(a+px(138 if menu_action else (112 if hidden else 160)),b+px(row-8 if menu_action else row))
   if child()==w: break
  assert child()==w, 'Menu not under pointer; no click sent'
  xt.XTestFakeButtonEvent(d,1,1,0); x.XFlush(d); time.sleep(.1)

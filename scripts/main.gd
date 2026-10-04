@@ -7,6 +7,7 @@ var hug_overlay: HugOverlay
 var debug_mode := false
 var paused := false
 var menu: PanelContainer
+var menu_window: Window
 var menu_column: VBoxContainer
 var menu_pet: Pet
 var pause_button: Button
@@ -31,6 +32,7 @@ var update_checker: UpdateChecker
 var update_status: Label
 var update_button: Button
 var update_panel := false
+var alarm_window: AlarmWindow
 
 func _ready() -> void:
 	initialize.call_deferred()
@@ -118,6 +120,10 @@ func initialize() -> void:
 	hiding_icon.setup()
 	hiding_icon.restore_requested.connect(show_pets)
 	hiding_icon.exit_requested.connect(func(): get_tree().quit())
+	alarm_window = AlarmWindow.new()
+	alarm_window.visible = false
+	add_child(alarm_window)
+	alarm_window.setup(pets[0].font, "" if settings_path.is_empty() else "user://alarm.cfg")
 	print("CP Pet ready: backend=%s, pets=%d, work_area=%s" % [DisplayServer.get_name(), pets.size(), area])
 
 func initial_position(index: int) -> Vector2:
@@ -176,11 +182,12 @@ func toggle_menu(pet: Pet) -> void:
 		if same:
 			return
 	interaction.cancel()
-	var column := make_menu(pet, 6)
+	var column := make_menu(pet, 7)
 	pause_button = add_menu_button(column, "继续活动" if paused else "暂停活动", toggle_pause)
 	add_menu_button(column, "互动  ›", show_interactions)
 	add_menu_button(column, "隐藏桌宠", hide_pets)
 	add_menu_button(column, "设置  ›", show_settings)
+	add_menu_button(column, "工具  ›", show_tools)
 	add_menu_button(column, "帮助  ›", show_help)
 	var exit_button := add_menu_button(column, "退出桌宠", func(): get_tree().quit())
 	exit_button.add_theme_color_override("font_color", Color("985847"))
@@ -228,8 +235,12 @@ func add_menu_button(parent: Control, label: String, action: Callable) -> Button
 func close_menu() -> void:
 	update_panel = false
 	interaction_buttons.clear()
-	if is_instance_valid(menu):
+	if is_instance_valid(menu_window):
+		menu_window.hide()
+		menu_window.queue_free()
+	elif is_instance_valid(menu):
 		menu.queue_free()
+	menu_window = null
 	menu = null
 	if is_instance_valid(menu_pet):
 		menu_pet.menu_open = false
@@ -310,7 +321,7 @@ func make_menu(pet: Pet, rows: int, title := "忘羡桌宠", subtitle := "WangXi
 	pet.menu_open = true
 	pet.controller.menu_rect = Rect2(22, 8, 276, rows * 34 + 64)
 	menu = PanelContainer.new()
-	menu.position = pet.controller.menu_rect.position
+	menu.position = Vector2.ZERO
 	menu.size = pet.controller.menu_rect.size
 	var panel_style := Pet.rounded(Color("faf9f4"), 14)
 	panel_style.set_border_width_all(1)
@@ -347,19 +358,36 @@ func make_menu(pet: Pet, rows: int, title := "忘羡桌宠", subtitle := "WangXi
 	column.add_theme_constant_override("separation", 2)
 	shell.add_child(column)
 	menu_column = column
-	pet.add_child(menu)
-	pet.controller.update_input(true)
-	# Raise the native character window as well as its controls: the other
-	# character is a separate always-on-top window. Keep it unfocusable.
-	if DisplayServer.get_name() != "headless":
-		# X11 unfocusable windows ignore foreground requests; remapping
-		# restores their stacking order without taking keyboard focus.
-		if DisplayServer.get_name() == "X11":
-			pet.controller.window.hide()
-			pet.controller.window.show()
-			pet.controller.update_input(true)
-		pet.controller.window.move_to_foreground()
+	# A separate menu surface stacks above either pet without remapping
+	# character windows (which destroys their native surface and flashes).
+	menu_window = Window.new()
+	menu_window.visible = false
+	menu_window.title = "CP Pet Menu"
+	menu_window.borderless = true
+	menu_window.transparent = true
+	menu_window.transparent_bg = true
+	menu_window.always_on_top = true
+	menu_window.unfocusable = true
+	menu_window.unresizable = true
+	menu_window.gui_embed_subwindows = false
+	menu_window.size = Vector2i((menu.size * size_factor).ceil())
+	menu_window.content_scale_size = menu_window.size
+	menu_window.position = pet.controller.window.position + Vector2i(pet.controller.menu_rect.position * size_factor)
+	menu.scale = Vector2.ONE * size_factor
+	add_child(menu_window)
+	menu_window.add_child(menu)
+	menu_window.close_requested.connect(close_menu)
+	# The separate window receives menu clicks; the pet keeps its art-only
+	# input region, allowing surrounding transparent desktop space through.
+	pet.controller.update_input(not pet.bubble.is_empty())
+	show_menu_window.call_deferred(menu_window)
 	return column
+
+func show_menu_window(expected: Window) -> void:
+	# Let containers finish layout before the first visible frame.
+	await get_tree().process_frame
+	if is_instance_valid(expected) and expected == menu_window:
+		expected.show()
 
 func show_settings() -> void:
 	var pet := menu_pet
@@ -516,3 +544,9 @@ func show_feedback() -> void:
 	button.disabled = regex.search(address) == null
 	add_menu_button(column, "复制邮箱", func(): DisplayServer.clipboard_set(address))
 	add_menu_button(column, "返回", show_help)
+
+func show_tools() -> void:
+	var pet := menu_pet
+	var column := make_menu(pet, 2, "工具", "Tools")
+	add_menu_button(column, "每日闹钟", func(): close_menu(); alarm_window.open())
+	add_menu_button(column, "‹  返回主菜单", func(): close_menu(); toggle_menu(pet))

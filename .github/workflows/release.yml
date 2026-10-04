@@ -61,6 +61,7 @@ jobs:
           "$GODOT_BIN" --headless --path . --script tests/test_hug.gd
           "$GODOT_BIN" --headless --path . --script tests/test_controls.gd
           "$GODOT_BIN" --headless --path . --script tests/test_updates.gd
+          "$GODOT_BIN" --headless --path . --script tests/test_alarm.gd
           python3 tools/build_stage1.py --stage 4 --release --platform all
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

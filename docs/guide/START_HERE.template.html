@@ -10,7 +10,7 @@
 </head>
 <body><main>
 <header><img src="icon.png" alt="忘羡桌宠的双兔图标"><div><div class="eyebrow">忘羡桌宠 · 使用指南</div><h1>让他们住进你的桌面。</h1><p>走走、对视，再抱一会儿。一个陪你读书、画画和工作的双人桌宠。</p><p class="muted">{{PLATFORM}} · {{VERSION}} 测试版 · 本指南可离线阅读</p></div></header>
-<nav aria-label="指南目录"><a href="#start">开始使用</a><a href="#controls">日常操作</a><a href="#interactions">互动规则</a><a href="#hide">隐藏与恢复</a><a href="#help">遇到问题</a></nav>
+<nav aria-label="指南目录"><a href="#start">开始使用</a><a href="#controls">日常操作</a><a href="#interactions">互动规则</a><a href="#hide">隐藏与恢复</a><a href="#alarm">每日闹钟</a><a href="#help">遇到问题</a></nav>
 <p class="notice">非官方同人桌宠。本包为测试版，请先完整解压，再运行程序。{{PLATFORM_NOTE}}</p>
 <section id="start"><h2>01 / 第一次打开</h2>
 <details {{WINDOWS_OPEN}}><summary>Windows</summary><ol><li>将整个 ZIP 解压到一个准备长期保留的文件夹。</li><li>双击 <code>CPPet.exe</code> 或 <code>run.cmd</code>。请把 <code>CPPet.pck</code> 与 EXE 放在一起。</li><li>想放到桌面？运行 <code>create-shortcut.cmd</code>，它会创建带双兔图标的快捷方式。</li></ol><p class="muted">无需安装 Godot，也无需管理员权限。移动或更新程序文件夹后，重新运行快捷方式助手。</p></details>
@@ -27,7 +27,8 @@
 <ul><li><strong>每个动作分别计时。</strong>拥抱不会让对视也进入 30 秒冷却，反过来同样如此。</li><li>自动和手动触发采用相同计时；从动作完成或取消时开始。</li><li>拖动、打开菜单、暂停、隐藏、重置位置或调整大小会取消正在进行的互动，并让刚才的动作进入自己的冷却，同时开始短间隔。</li><li>条件不满足、没有真正开始的请求，不产生冷却。</li><li>暂停、打开菜单或隐藏时，冷却继续计时。恢复前，角色不会自己互动。重启程序会重新开始本次运行的冷却记录。</li></ul>
 <p class="example">例如：拥抱结束后，若对视本身没有冷却、站位也合适，最早 {{REST}} 秒后可对视；再次拥抱则需要等待 {{HUG_COOLDOWN}} 秒。按钮会显示「冷却」或「间隔」倒计时。</p></section>
 <section id="hide"><h2>04 / 想让桌面清静一会儿</h2><div class="card restore"><img src="hiding_icon.png" alt="屏幕右侧的白兔恢复图标"><div><p class="steps">右键角色 → 隐藏桌宠</p><p>两人消失，屏幕右侧留下这只白兔。没有倒计时，也不会自动回来。按住白兔用左键拖动，可把它放到主屏内喜欢的位置；本次运行中会记住位置。</p><p><strong>右键白兔 → 显示桌宠</strong>，两人就会回来，保持原来的暂停状态。也可在白兔菜单里选择「退出桌宠」。</p></div></div></section>
-<section id="help"><h2>05 / 遇到问题</h2>
+<section id="alarm"><h2>05 / 每日闹钟</h2><p class="steps">右键角色 → 工具 → 每日闹钟</p><p>按 24 小时制选择时、分，点击「开启每日闹钟」。每天按本机时间提醒一次；若今天的时间已过，则从明天开始。窗口会显示下一次提醒日期。一次设置一个闹钟，两人的菜单打开同一个窗口。</p><p>开启状态和提醒时间会保存，重启桌宠后继续使用。关闭窗口、暂停角色或隐藏桌宠不会关闭闹钟。到时会弹出不抢键盘焦点的提醒，并播放一次短提示音；可关闭「提示音」。点击「知道了」收起当前提醒状态，明天仍会提醒；「关闭闹钟」停止每日提醒，「修改时间」先关闭闹钟再编辑。</p><p class="muted">桌宠退出期间不会提醒，重新启动也不会补发退出期间错过的提醒。电脑休眠时不会唤醒电脑；若桌宠一直运行，唤醒后会合并错过的提醒，只提示一次。闹钟跟随本机日期和时间，同一个本地日期最多提醒一次。</p></section>
+<section id="help"><h2>06 / 遇到问题</h2>
 <details><summary>怎么关闭？重新打开后不走动？</summary><p>右键角色或白兔，选择「退出桌宠」。暂停状态会保存；如果角色没有活动，右键选择「继续活动」。请避免同时打开多个副本。</p></details>
 <details><summary>互动按钮灰了，或者一直没互动？</summary><p>先看按钮旁边的原因。确认魏左蓝右、两人靠近且已落地、未暂停；自动模式还需要开启「自动互动」。冷却和短间隔结束后按钮会自动恢复，不用反复重开菜单。</p></details>
 <details><summary>桌宠太小／太大，或者快捷方式失效？</summary><p>优先用桌宠自己的大小设置；操作系统的显示缩放会影响整个桌面。移动解压文件夹会使旧快捷方式失效，重新运行包内的快捷方式助手即可。</p></details>

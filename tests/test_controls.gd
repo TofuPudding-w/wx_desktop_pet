@@ -24,7 +24,18 @@ func run() -> void:
 	app.interaction.rest_remaining = 0
 	app.interaction.step(0.1, app.area)
 	check(app.interaction.phase == InteractionManager.Phase.FREE, "automatic off suppresses encounter")
+	var visibility_changes := [0]
+	for pet in app.pets:
+		pet.controller.window.visibility_changed.connect(func(): visibility_changes[0] += 1)
 	app.toggle_menu(app.pets[0])
+	await process_frame
+	await process_frame
+	check(app.menu.get_window() == app.menu_window and app.menu_window != app.pets[0].controller.window, "menu uses independent native window")
+	check(app.menu_window.visible and visibility_changes[0] == 0, "opening menu never hides a character")
+	app.show_settings()
+	await process_frame
+	await process_frame
+	check(visibility_changes[0] == 0, "switching submenu never hides a character")
 	app.show_interactions()
 	check(not app.interaction_buttons.hug.disabled, "eligible manual hug enabled even with auto off")
 	app.interaction_buttons.hug.pressed.emit()

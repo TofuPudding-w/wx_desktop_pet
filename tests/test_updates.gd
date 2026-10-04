@@ -55,7 +55,7 @@ func run() -> void:
 	await process_frame
 	app.toggle_menu(app.pets[0])
 	var root_column = app.menu_column
-	check(root_column.get_child_count() == 6, "main menu contains six everyday actions")
+	check(root_column.get_child_count() == 7, "main menu includes Tools alongside everyday actions")
 	root_column.get_child(3).pressed.emit()
 	var settings_column = app.menu_column
 	check("检查更新" in settings_column.get_child(3).text, "update check is in settings")

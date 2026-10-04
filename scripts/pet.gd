@@ -97,6 +97,8 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			start_drag(Vector2(DisplayServer.mouse_get_position()))
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			# The opening click belongs to the pet, not the newly created menu.
+			get_viewport().set_input_as_handled()
 			menu_requested.emit(self)
 
 func _process(delta: float) -> void:
