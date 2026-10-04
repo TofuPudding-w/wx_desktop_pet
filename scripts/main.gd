@@ -349,6 +349,16 @@ func make_menu(pet: Pet, rows: int, title := "忘羡桌宠", subtitle := "WangXi
 	menu_column = column
 	pet.add_child(menu)
 	pet.controller.update_input(true)
+	# Raise the native character window as well as its controls: the other
+	# character is a separate always-on-top window. Keep it unfocusable.
+	if DisplayServer.get_name() != "headless":
+		# X11 unfocusable windows ignore foreground requests; remapping
+		# restores their stacking order without taking keyboard focus.
+		if DisplayServer.get_name() == "X11":
+			pet.controller.window.hide()
+			pet.controller.window.show()
+			pet.controller.update_input(true)
+		pet.controller.window.move_to_foreground()
 	return column
 
 func show_settings() -> void:
