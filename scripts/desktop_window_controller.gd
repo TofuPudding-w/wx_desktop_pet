@@ -62,3 +62,9 @@ func set_size_factor(value: float) -> void:
 		window.size = Vector2i((Vector2(SIZE) * value).round())
 		# Render at native resolution; scale the scene, not a small raster viewport.
 		window.content_scale_size = window.size
+
+static func menu_position(pet_position: Vector2i, menu_size: Vector2i, factor: float, area: Rect2) -> Vector2i:
+	# Lift the menu by 120 logical pixels while keeping it inside the work area.
+	var desired := Vector2(pet_position) + Vector2(22, -112) * factor
+	var maximum := (area.end - Vector2(menu_size)).max(area.position)
+	return Vector2i(desired.clamp(area.position, maximum).round())

@@ -9,6 +9,7 @@ const MENU_RECT := Rect2(0, 8, 224, 64)
 var icon_image: Image
 var icon_polygon := PackedVector2Array()
 var menu: PanelContainer
+var palette := PetSettings.new()
 var ui_scale := 1.0
 var picture: TextureRect
 var icon_rect := ICON_RECT
@@ -134,9 +135,9 @@ func show_menu() -> void:
 	menu = PanelContainer.new()
 	menu.position = menu_rect.position
 	menu.size = menu_rect.size
-	var panel := Pet.rounded(Color("faf9f4"), 10)
+	var panel := Pet.rounded(palette.menu_color("background"), 10)
 	panel.set_border_width_all(1)
-	panel.border_color = Color("dce2d8")
+	panel.border_color = palette.menu_color("border")
 	panel.content_margin_left = 4
 	panel.content_margin_right = 4
 	panel.content_margin_top = 4
@@ -159,18 +160,18 @@ func add_button(column: VBoxContainer, label: String, action: Callable) -> void:
 	button.focus_mode = Control.FOCUS_NONE
 	button.add_theme_font_override("font", preload("res://assets/fonts/DroidSansFallbackFull.ttf"))
 	button.add_theme_font_size_override("font_size", 15)
-	button.add_theme_color_override("font_color", Color("253346"))
-	button.add_theme_color_override("font_hover_color", Color("30473f"))
-	button.add_theme_color_override("font_pressed_color", Color("30473f"))
+	button.add_theme_color_override("font_color", palette.menu_color("text"))
+	button.add_theme_color_override("font_hover_color", palette.menu_color("title"))
+	button.add_theme_color_override("font_pressed_color", palette.menu_color("title"))
 	var normal := Pet.rounded(Color(0, 0, 0, 0), 6)
 	normal.content_margin_left = 14
 	button.add_theme_stylebox_override("normal", normal)
 	var hover := normal.duplicate()
-	hover.bg_color = Color("e6eee3")
+	hover.bg_color = palette.menu_color("hover")
 	button.add_theme_stylebox_override("hover", hover)
 	button.add_theme_stylebox_override("pressed", hover)
 	if "退出" in label:
-		button.add_theme_color_override("font_color", Color("985847"))
+		button.add_theme_color_override("font_color", palette.menu_color("exit"))
 	button.pressed.connect(action)
 	column.add_child(button)
 

@@ -89,9 +89,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			stop_drag()
 			return
-		# Let menu Controls handle their own left clicks instead of starting a drag.
-		if menu_open and controller.menu_rect.has_point(event.position / size_factor):
-			return
+		# Menu clicks go to their own window; exposed artwork stays draggable.
 		if not event.pressed or artwork == null or not artwork.opaque_at(art_key, event.position / size_factor):
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -151,7 +149,7 @@ func step(delta: float, area: Rect2) -> void:
 func set_bubble(text: String) -> void:
 	bubble = text
 	if controller:
-		controller.update_input(not text.is_empty() or menu_open)
+		controller.update_input(not text.is_empty())
 	queue_redraw()
 
 func refresh_art() -> void:
@@ -167,7 +165,7 @@ func refresh_art() -> void:
 	art_sprite.offset = frame.offset + frame.texture.get_size() * 0.5
 	art_sprite.scale = Vector2.ONE * frame.scale
 	art_sprite.flip_h = frame.flip
-	controller.update_input(menu_open or not bubble.is_empty(), frame.polygon)
+	controller.update_input(not bubble.is_empty(), frame.polygon)
 
 func _draw() -> void:
 	if controller and controller.debug_mode:
