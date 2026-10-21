@@ -34,6 +34,8 @@ var update_status: Label
 var update_button: Button
 var update_panel := false
 var alarm_window: AlarmWindow
+var story_player: StoryPlayer
+var story_editor: StoryEditor
 
 func _ready() -> void:
 	initialize.call_deferred()
@@ -126,6 +128,9 @@ func initialize() -> void:
 	alarm_window.visible = false
 	add_child(alarm_window)
 	alarm_window.setup(pets[0].font, "" if settings_path.is_empty() else "user://alarm.cfg")
+	story_player = StoryPlayer.new()
+	add_child(story_player)
+	story_player.setup(pets, interaction, settings)
 	print("CP Pet ready: backend=%s, pets=%d, work_area=%s" % [DisplayServer.get_name(), pets.size(), area])
 
 func initial_position(index: int) -> Vector2:
@@ -161,7 +166,10 @@ func _process(delta: float) -> void:
 				pet.foot = DesktopWindowController.clamp_foot(pet.foot, area, size_factor)
 				if pet.state != Pet.State.DRAGGED:
 					pet.change_state(Pet.State.FALL)
-	interaction.step(minf(delta, 0.05), area, delta)
+	if story_player.active:
+		interaction.advance_cooldowns(delta)
+	else:
+		interaction.step(minf(delta, 0.05), area, delta)
 	hug_overlay.sync()
 	# Opt-in unattended soak: repeatedly bring idle pets together, without input injection.
 	if soak and interaction.phase == InteractionManager.Phase.FREE and pets.size() == 2:
@@ -251,6 +259,8 @@ func close_menu() -> void:
 	menu_pet = null
 
 func toggle_pause() -> void:
+	if is_instance_valid(story_player):
+		story_player.stop("桌宠状态改变，播放已停止")
 	paused = not paused
 	interaction.cancel()
 	interaction.paused = paused
@@ -263,6 +273,8 @@ func toggle_pause() -> void:
 	save_settings()
 
 func reset_positions() -> void:
+	if is_instance_valid(story_player):
+		story_player.stop("桌宠状态改变，播放已停止")
 	interaction.cancel()
 	close_menu()
 	for index in range(pets.size()):
@@ -296,6 +308,8 @@ func show_size_settings() -> void:
 	pet.controller.update_input(not pet.bubble.is_empty())
 
 func apply_size(value: float, persist := true) -> void:
+	if is_instance_valid(story_player):
+		story_player.stop("桌宠状态改变，播放已停止")
 	if value not in PetSettings.SIZES:
 		return
 	interaction.cancel()
@@ -434,6 +448,8 @@ func select_interaction(id: String) -> void:
 		show_interactions()
 
 func hide_pets() -> void:
+	if is_instance_valid(story_player):
+		story_player.stop("桌宠状态改变，播放已停止")
 	if pets_hidden:
 		return
 	interaction.cancel()
@@ -550,8 +566,9 @@ func show_feedback() -> void:
 
 func show_tools() -> void:
 	var pet := menu_pet
-	var column := make_menu(pet, 2, "工具", "Tools")
+	var column := make_menu(pet, 3, "工具", "Tools")
 	add_menu_button(column, "每日闹钟", func(): close_menu(); alarm_window.open())
+	add_menu_button(column, "气泡对白", show_story_editor)
 	add_menu_button(column, "‹  返回主菜单", func(): close_menu(); toggle_menu(pet))
 
 func show_appearance() -> void:
@@ -569,3 +586,12 @@ func show_appearance() -> void:
 			if is_instance_valid(hiding_icon.menu):
 				hiding_icon.show_menu())
 	appearance_window.open(settings)
+
+func show_story_editor() -> void:
+	close_menu()
+	if not is_instance_valid(story_editor):
+		story_editor = StoryEditor.new()
+		story_editor.visible = false
+		add_child(story_editor)
+		story_editor.setup(pets[0].font, story_player, "" if settings_path.is_empty() else "user://stories/library.json", settings)
+	story_editor.open()
