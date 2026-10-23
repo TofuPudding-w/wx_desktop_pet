@@ -29,6 +29,22 @@ class UserGuideTests(unittest.TestCase):
             self.assertIn('5 秒',text)
             self.assertIn('30 秒',text)
             self.assertEqual(text.count('<details open>'),1)
+    def test_english_render_and_missing_translations(self):
+        from website_language import english_page
+        for target in ['windows', 'linux', 'macos']:
+            text = render(ROOT, target, '0.3.0', '<test-build>', 'en')
+            page = References(); page.feed(text)
+            self.assertFalse(page.script)
+            self.assertIn('<html lang="en">', text)
+            self.assertIn('5 seconds', text)
+            self.assertIn('30 seconds', text)
+            self.assertIn('&lt;test-build&gt;', text)
+            self.assertNotIn('{{', text)
+            self.assertEqual(text.count('<details open>'), 1)
+            self.assertIn('Bubble dialogue', text)
+        with self.assertRaises(ValueError):
+            english_page('<p>新指南内容尚未翻译</p>', ROOT, guide=True)
+
     def test_metadata_is_escaped(self):
         text=render(ROOT,'windows','<version>','<script>')
         self.assertIn('&lt;version&gt;',text)

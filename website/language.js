@@ -19,7 +19,9 @@
   }
   const current = document.documentElement.lang === "en" ? "en" : "zh";
   if (preferred !== current) {
-    const destination = new URL(preferred === "en" ? "en.html" : "index.html", url);
+    const isGuide = /\/guide(?:-en)?\.html$/.test(url.pathname);
+    const page = isGuide ? (preferred === "en" ? "guide-en.html" : "guide.html") : (preferred === "en" ? "en.html" : "index.html");
+    const destination = new URL(page, url);
     destination.search = url.search;
     destination.hash = url.hash;
     window.location.replace(destination.href);

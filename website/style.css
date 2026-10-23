@@ -8,3 +8,7 @@
 html[lang="en"] h1{font-size:clamp(36px,4.6vw,62px);line-height:1.15;letter-spacing:-.035em}
 html[lang="en"] .platform .button{white-space:normal;text-align:center}
 @media(max-width:760px){.top{height:auto;min-height:100px;flex-wrap:wrap;padding-top:16px;padding-bottom:12px;gap:10px}.top nav{margin-left:auto}.language-switch{flex-basis:100%;margin:0;text-align:right}html[lang="en"] .brand{font-size:14px}html[lang="en"] .section-heading h2{font-size:30px}}
+
+/* Keep navigation and language selection together on the right. */
+.top{justify-content:flex-start}.top nav{margin-left:auto}.language-switch{margin-left:28px}
+@media(max-width:760px){.top nav{gap:16px}.language-switch{margin-left:0}}

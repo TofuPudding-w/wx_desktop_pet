@@ -43,3 +43,13 @@ GitHub v0.3.0 已于 2026-10-03 公开为 pre-release。release.json 的 version
 ## 百度网盘备用下载
 
 三个平台按钮共用作者提供的分享文件夹；release.json 各平台 mainland 为分享链接，mainland_label 为「百度网盘下载」，mainland_code 为「wx99」。网页展示提取码，提示用户自行选择对应系统 ZIP。分享内容由作者维护，未通过自动检查核验网盘内文件与 Release 的校验和一致。
+
+## 中英文同步维护
+
+- 首页：中文来源 `docs/website/index.template.html`，英文文案 `docs/website/en.json`。
+- 指南：两种语言共用 `docs/guide/START_HERE.template.html` 的结构和动态参数；英文文案在 `docs/guide/en.json`。修改中文说明时，同步更新对应英文条目。新增或改动的中文没有英文翻译时，构建会报错，不会静默混入中文。
+- 运行 `python3 tools/build_website.py`，同时生成 `website/index.html`、`en.html`、`guide.html`、`guide-en.html`。`--landing-only` 仅用于不涉及指南的首页修改。
+- 运行 `python3 -m unittest discover -s tests -p test_website.py` 和 `python3 -m unittest discover -s tests -p test_user_guide.py`。这些检查会发现指南生成文件落后于模板或翻译的情况，并检查两种语言的章节与链接。
+- 有 GJS 时运行 `gjs tests/test_website_language.js`，验证浏览器语言、保存偏好、手动切换、存储不可用和指南锚点跳转。
+- 页面首次按浏览器支持的语言选择；显式切换优先并保存于本浏览器。指南切换保持当前章节。脚本不可用时仍可通过普通链接打开对应语言。
+- 本次网站指南包含开发中的功能，并在两种语言顶部注明以下载包指南和发布说明为准；不要据此宣称旧下载包包含新功能。

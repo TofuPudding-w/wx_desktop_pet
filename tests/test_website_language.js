@@ -16,13 +16,14 @@ function check(languages, saved, query, page, expected, blocked = false) {
         return part ? part.slice(key.length + 1) : null;
       }};
     }
+    get pathname() { return this.path.replace(/^https:\/\/[^/]+/, ""); }
     get href() { return this.path + this.search + this.hash; }
   }
   const window = {
     location: { href: 'https://example.com/' + page + query, replace: value => redirected = value },
     localStorage: { getItem: () => { if(blocked) throw Error(); return stored; }, setItem: (_,v) => { if(blocked) throw Error(); stored=v; } }
   };
-  new Function('window','document','navigator','URL',source)(window,{documentElement:{lang:page==='en.html'?'en':'zh-CN'}},{languages},URL);
+  new Function('window','document','navigator','URL',source)(window,{documentElement:{lang:['en.html','guide-en.html'].includes(page)?'en':'zh-CN'}},{languages},URL);
   if ((redirected ? redirected.split('/').pop() : null) !== expected) throw Error(JSON.stringify({languages,saved,query,page,redirected,expected}));
   if(query==='?lang=zh' && !blocked && stored!=='zh') throw Error('Explicit choice was not saved');
   count++;
@@ -38,4 +39,8 @@ check(['zh-CN'],'zh','?lang=en','en.html',null);
 check(['en-US'],null,'#download','index.html','en.html#download',true);
 check(['en-US'],null,'?lang=zh','index.html',null,true);
 check(['en-US'],'invalid','','en.html',null);
+check(['en-US'],null,'#hide','guide.html','guide-en.html#hide');
+check(['zh-CN'],null,'#alarm','guide-en.html','guide.html#alarm');
+check(['en-US'],'en','?lang=zh','guide.html',null);
+check(['en-US'],null,'?lang=en#stories','guide.html','guide-en.html?lang=en#stories',true);
 print('Language preference: '+count+' checks passed');

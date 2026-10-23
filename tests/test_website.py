@@ -7,7 +7,7 @@ import unittest
 from urllib.parse import urlsplit,unquote
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
-from build_website import validate, version_manifest
+from build_website import validate, version_manifest, website_guides
 from website_language import english_page
 class Page(HTMLParser):
     def __init__(self):
@@ -54,7 +54,8 @@ class WebsiteTests(unittest.TestCase):
         english = (ROOT/'website/en.html').read_text()
         self.assertEqual(english_page(chinese, ROOT), english)
         self.assertIn('<html lang="en">', english)
-        self.assertIn('Guide (Chinese)', english)
+        self.assertIn('guide-en.html', english)
+        self.assertNotIn('Guide (Chinese)', english)
         self.assertIn('language.js', english)
         for html in (chinese, english):
             self.assertIn('index.html?lang=zh', html)
@@ -65,6 +66,21 @@ class WebsiteTests(unittest.TestCase):
         self.assertEqual(external(zh), external(en))
         with self.assertRaises(ValueError):
             english_page('<p>新增但尚未翻译的发布内容</p>', ROOT)
+
+    def test_guides_stay_in_sync(self):
+        release = json.loads((ROOT/'docs/website/release.json').read_text())
+        generated = website_guides(release)
+        self.assertEqual(set(generated), {'guide.html', 'guide-en.html'})
+        pages = []
+        for name, text in generated.items():
+            self.assertEqual((ROOT/'website'/name).read_text(), text)
+            self.assertIn('guide.html?lang=zh', text)
+            self.assertIn('guide-en.html?lang=en', text)
+            self.assertIn('language.js', text)
+            page = Page(); page.feed(text); pages.append(page)
+        self.assertEqual(pages[0].ids, pages[1].ids)
+        self.assertIn('stories', pages[1].ids)
+        self.assertIn('alarm', pages[1].ids)
 
     def test_release_safety(self):
         release=json.loads((ROOT/'docs/website/release.json').read_text())

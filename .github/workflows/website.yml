@@ -1,0 +1,19 @@
+name: Website language checks
+on:
+  push:
+    paths: ['website/**', 'docs/website/**', 'docs/guide/**', 'tools/build_website.py', 'tools/website_language.py', 'tools/user_guide.py', 'tests/test_website*', 'tests/test_user_guide.py', 'data/interactions.json', 'data/online.json', '.github/workflows/website.yml']
+  pull_request:
+    paths: ['website/**', 'docs/website/**', 'docs/guide/**', 'tools/build_website.py', 'tools/website_language.py', 'tools/user_guide.py', 'tests/test_website*', 'tests/test_user_guide.py', 'data/interactions.json', 'data/online.json', '.github/workflows/website.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Check generated pages, translations and guide parity
+        run: |
+          python3 -m unittest discover -s tests -p test_website.py
+          python3 -m unittest discover -s tests -p test_user_guide.py

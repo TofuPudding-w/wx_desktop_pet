@@ -5,8 +5,10 @@ from html import escape
 from html.parser import HTMLParser
 
 
-def english_page(source, root):
+def english_page(source, root, guide=False):
     translations = json.loads((root / 'docs/website/en.json').read_text())
+    if guide:
+        translations.update(json.loads((root / 'docs/guide/en.json').read_text()))
 
     def translate(text):
         key = text.strip()
@@ -33,8 +35,10 @@ def english_page(source, root):
             result = []
             for key, value in attrs:
                 if tag == 'html' and key == 'lang': value = 'en'
+                if key == 'href' and value == 'guide.html': value = 'guide-en.html'
                 if key in ('alt', 'aria-label') or (tag == 'meta' and key == 'content'):
                     value = translate(value)
+                if key.startswith("{{"): key = key.upper()
                 result.append(key if value is None else f'{key}="{escape(value, quote=True)}"')
             self.output.append('<' + tag + (' ' if result else '') + ' '.join(result) + '>')
         def handle_endtag(self, tag): self.output.append('</' + tag + '>')
