@@ -7,6 +7,7 @@ from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit
 from user_guide import render
+from website_language import english_page
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,7 +39,7 @@ def version_manifest(release):
     version = release.get('stable_version') if release.get('prerelease', False) else release['version']
     return {'version': version, 'status': 'published' if version else 'unreleased'}
 
-def build():
+def build(landing_only=False):
     release = json.loads((ROOT/'docs/website/release.json').read_text())
     validate(release)
     out = ROOT/'website'
@@ -68,16 +69,22 @@ def build():
     template = (ROOT/'docs/website/index.template.html').read_text()
     for key, value in {'RELEASE_STATUS':status,'DOWNLOAD_CARDS':''.join(cards),'CHANGELOG':changelog,'RELEASE_INTRO':('当前提供公开预览版，请按操作系统选择下载；实际内容与限制见发布说明。' if release.get('prerelease', False) else '请按操作系统选择下载；实际内容与限制见发布说明。') if version else '以下功能介绍对应正在准备的分享版。实际内容以各版本发布说明为准。'}.items():
         template = template.replace('{{'+key+'}}', value)
+    english = english_page(template, ROOT)
     (out/'index.html').write_text(template)
-    guide = render(ROOT,'linux',version or '分享版准备中','网站指南')
-    guide = guide.replace('Linux x64 · '+(version or '分享版准备中')+' 测试版 · 本指南可离线阅读','Windows / Linux / macOS · 分享版使用说明（发布前预览）' if not version else 'Windows / Linux / macOS · v'+version+(' · 预览版' if release.get('prerelease', False) else ''))
-    guide = guide.replace('<body><main>','<body><main><p><a href="./">← 返回下载首页</a></p><p class="notice">本指南介绍正在准备的分享版功能。请以下载包中的指南和该版本发布说明为准。</p>' if not version else '<body><main><p><a href="./">← 返回下载首页</a></p>')
-    for name in ('icon.png','hiding_icon.png'):
-        guide = guide.replace('src="'+name+'"','src="images/'+name+'"')
-    guide = guide.replace('许可说明见 <code>licenses/</code>；纯文字入口为 <code>README.txt</code>','下载包中另附 <code>licenses/</code> 许可说明及 <code>README.txt</code> 文字入口')
-    (out/'guide.html').write_text(guide)
+    (out/'en.html').write_text(english)
+    if not landing_only:
+        guide = render(ROOT,'linux',version or '分享版准备中','网站指南')
+        guide = guide.replace('Linux x64 · '+(version or '分享版准备中')+' 测试版 · 本指南可离线阅读','Windows / Linux / macOS · 分享版使用说明（发布前预览）' if not version else 'Windows / Linux / macOS · v'+version+(' · 预览版' if release.get('prerelease', False) else ''))
+        guide = guide.replace('<body><main>','<body><main><p><a href="./">← 返回下载首页</a></p><p class="notice">本指南介绍正在准备的分享版功能。请以下载包中的指南和该版本发布说明为准。</p>' if not version else '<body><main><p><a href="./">← 返回下载首页</a></p>')
+        for name in ('icon.png','hiding_icon.png'):
+            guide = guide.replace('src="'+name+'"','src="images/'+name+'"')
+        guide = guide.replace('许可说明见 <code>licenses/</code>；纯文字入口为 <code>README.txt</code>','下载包中另附 <code>licenses/</code> 许可说明及 <code>README.txt</code> 文字入口')
+        (out/'guide.html').write_text(guide)
     (out/'version.json').write_text(json.dumps(version_manifest(release),ensure_ascii=False,indent=2)+'\n')
-    print('Generated website/index.html, guide.html, version.json and original artwork copies')
+    print('Generated website/index.html, en.html, version.json and original artwork copies' + ('' if landing_only else '; also regenerated guide.html'))
 
 if __name__ == '__main__':
-    build()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--landing-only', action='store_true', help='Leave the published guide unchanged')
+    build(parser.parse_args().landing_only)

@@ -8,6 +8,7 @@ from urllib.parse import urlsplit,unquote
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from build_website import validate, version_manifest
+from website_language import english_page
 class Page(HTMLParser):
     def __init__(self):
         super().__init__();self.refs=[];self.ids=set()
@@ -47,6 +48,23 @@ class WebsiteTests(unittest.TestCase):
         self.assertEqual(version_manifest(preview)['version'],'0.2.0')
         preview['prerelease']=False
         self.assertEqual(version_manifest(preview)['version'],'0.3.0')
+
+    def test_english_page_and_download_parity(self):
+        chinese = (ROOT/'website/index.html').read_text()
+        english = (ROOT/'website/en.html').read_text()
+        self.assertEqual(english_page(chinese, ROOT), english)
+        self.assertIn('<html lang="en">', english)
+        self.assertIn('Guide (Chinese)', english)
+        self.assertIn('language.js', english)
+        for html in (chinese, english):
+            self.assertIn('index.html?lang=zh', html)
+            self.assertIn('en.html?lang=en', html)
+        zh, en = Page(), Page()
+        zh.feed(chinese); en.feed(english)
+        external = lambda page: [url for _, _, url in page.refs if url.startswith(('https:', 'mailto:'))]
+        self.assertEqual(external(zh), external(en))
+        with self.assertRaises(ValueError):
+            english_page('<p>新增但尚未翻译的发布内容</p>', ROOT)
 
     def test_release_safety(self):
         release=json.loads((ROOT/'docs/website/release.json').read_text())
